@@ -1,12 +1,53 @@
-input.field {
-    width: 90%;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+}
+
+.details-div {
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    background-color: blanchedalmond;
+    margin: 5px;
+}
+
+.link-span {
+    cursor: pointer;
+    color: blue;
+}
+
+#file-reader {
+    width: 100px !important;
+}
+
+.input-div {
+    display: block;
+    margin: 5px;
+}
+
+.notes-input {
+    height: 80px;
+    resize: none;
+    width: 250px;
+    margin: 5px;
+}
+
+.text-input {
+    width: 250px;
+    margin: 5px;
 }
 
 table {
     border-collapse: collapse;
+    margin: auto;
 }
 
-td, th {
+th {
+    border: 1px solid #999;
+    padding: 0.5rem;
+}
+
+td {
     border: 1px solid #999;
     padding: 0.5rem;
     text-align: left;
@@ -21,9 +62,9 @@ td, th {
     right: 0;
     bottom: 0;
     left: 0;
-    background: rgba(0,0,0,0.8);
+    background: rgba(0, 0, 0, 0.8);
     z-index: 99999;
-    opacity:0;
+    opacity: 0;
     -webkit-transition: opacity 400ms ease-in;
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
@@ -31,7 +72,7 @@ td, th {
 }
 
 .modalDialog:target {
-    opacity:1;
+    opacity: 1;
     pointer-events: auto;
 }
 
@@ -66,4 +107,47 @@ td, th {
     box-shadow: 1px 1px 3px #000;
 }
 
-.close:hover { background: #00d9ff; }
+.close:hover {
+    background: #00d9ff;
+}
+
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 80px;
+}
+
+.App-header {
+    background: url("/images/backgroud1.jpg") center;
+    height: 150px;
+    padding: 20px;
+    color: white;
+}
+
+.App-title {
+    font-size: 1.5em;
+}
+
+.App-intro {
+    font-size: large;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.menu-bar {
+    width: 15%;
+    height: -webkit-fill-available;
+    display: block;
+    float: left;
+    background-color: #606061;
+}

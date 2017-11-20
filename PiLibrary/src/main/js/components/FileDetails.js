@@ -8,7 +8,7 @@ export default class FileDetails extends React.Component {
     }
 
     handleDelete() {
-        this.props.onDelete(this.props.file);
+        this.props.onDelete(this.props.file.name);
     }
 
     render() {

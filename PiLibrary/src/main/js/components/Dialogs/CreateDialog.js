@@ -5,33 +5,74 @@ export default class CreateDialog extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this.state = {
+            name: "",
+            notes: "",
+            tags: "",
+            file: undefined,
+            isNameValid: false
+        };
+
+        this.onNameChangeHandler = this.onNameChangeHandler.bind(this);
+        this.onNotesChangeHandler = this.onNotesChangeHandler.bind(this);
+        this.onTagsChangeHandler = this.onTagsChangeHandler.bind(this);
+        this.onFileClickHandler = this.onFileClickHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    onNameChangeHandler(e) {
+        let value = e.target.value;
+        let nameValidity = this.validateName(value);
+        this.setState({
+            name: e.target.value,
+            isNameValid: nameValidity
+        });
+    }
+
+    validateName(value) {
+        return value.lastIndexOf(".") < value.length - 1 && value.lastIndexOf(".") > -1;
+    }
+
+    onNotesChangeHandler(e) {
+        this.setState({
+            notes: e.target.value
+        });
+    }
+
+    onTagsChangeHandler(e) {
+        this.setState({
+            tags: e.target.value
+        });
+    }
+
+    onFileClickHandler(event) {
+        this.setState({
+            file: event.target.files[0]
+        });
     }
 
     handleSubmit(e) {
         e.preventDefault();
-        var newFile = {};
-        this.props.attributes.forEach(attribute => {
-            newFile[attribute] = ReactDOM.findDOMNode(this.refs[attribute]).value.trim();
-        });
+        let newFile = {
+            file: this.state.file,
+            name: this.state.name,
+            notes: this.state.notes,
+            tags: this.state.tags
+        };
         this.props.onCreate(newFile);
 
-        // clear out the dialog's inputs
-        this.props.attributes.forEach(attribute => {
-            ReactDOM.findDOMNode(this.refs[attribute]).value = '';
+        this.setState({
+            name: "",
+            notes: "",
+            tags: "",
+            files: undefined,
+            isNameValid: false
         });
-
-        // Navigate away from the dialog to hide it.
         window.location = "#";
     }
 
     render() {
-        var inputs = this.props.attributes.map(attribute =>
-            <p key={attribute}>
-                <input type="text" placeholder={attribute} ref={attribute} className="field" />
-            </p>
-        );
-
         return (
             <div>
                 <a href="#createFile">Create</a>
@@ -43,8 +84,17 @@ export default class CreateDialog extends React.Component {
                         <h2>Upload new file</h2>
 
                         <form>
-                            {inputs}
-                            <button onClick={this.handleSubmit}>Create</button>
+                            <input type="text" placeholder="Name" className="text-input"
+                                   onChange={this.onNameChangeHandler}/>
+                            <textarea placeholder="Description" className="notes-input"
+                                      onChange={this.onNotesChangeHandler}/>
+                            <input type="text" placeholder="Tags" className="text-input"
+                                   onChange={this.onTagsChangeHandler}/>
+                            <input className="text-input" type="file" onChange={this.onFileClickHandler}
+                                   onClick={(event) => event.target.value = null}/>
+                            <button disabled={this.state.file === undefined || !this.state.isNameValid}
+                                    onClick={this.handleSubmit}>Create
+                            </button>
                         </form>
                     </div>
                 </div>

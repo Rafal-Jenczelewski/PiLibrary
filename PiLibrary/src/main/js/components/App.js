@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import CreateDialog from './Dialogs/CreateDialog';
 import FileList from './FileList'
 import PaginationBar from "./Dialogs/PaginationBar";
+import Banner from './Banner';
+import MenuBar from "./MenuBar";
 
 const client = require('../client');
 const follow = require('../follow');
@@ -12,7 +14,7 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {files: [], attributes: [], pageSize: 2, links: {}};
+        this.state = {files: [], attributes: [], pageSize: 10, links: {}};
 
         this.updatePageSize = this.updatePageSize.bind(this);
         this.onCreate = this.onCreate.bind(this);
@@ -42,11 +44,25 @@ class App extends Component {
         });
     }
 
-    onCreate(newFile) {
-        client({
-            method: 'POST',
-            path: root + "/uploadedFiles/upload"
-        })
+    onCreate(data) {
+        let formData = new FormData();
+
+        formData.append("file", data.file);
+        formData.append("name", data.name);
+        formData.append("notes", data.notes);
+        formData.append("tags", data.tags);
+
+        fetch(root + "/uploadedFiles/upload", {
+            mode: "cors",
+            body: formData,
+            method: "post",
+        }).then(response => this.loadFromServer(this.state.pageSize))
+
+        // client({
+        //     method: 'POST',
+        //     path: root + "/uploadedFiles/upload",
+        //     body: formData
+        // })
         // follow(client, root, ['uploadedFiles']).then(fileCollection => {
         //     return client({
         //         method: 'POST',
@@ -66,10 +82,14 @@ class App extends Component {
         // });
     }
 
-    onDelete(file) {
-        client({method: 'DELETE', path: file._links.self.href}).done(response => {
-            this.loadFromServer(this.state.pageSize);
-        });
+    onDelete(name) {
+        // client({method: 'DELETE', path: file._links.self.href}).done(response => {
+        //     this.loadFromServer(this.state.pageSize);
+        // });
+        fetch(root + "/uploadedFiles/delete/" + name, {
+            method: "delete",
+            mode: "cors",
+        }).then(response => this.loadFromServer(this.state.pageSize))
     }
 
     onNavigate(navUri) {
@@ -105,8 +125,9 @@ class App extends Component {
     }
 
     render() {
-        return (<div>
-            <CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
+        return (<div className={"App"}>
+            <Banner/>
+            <MenuBar onUpload={this.onCreate} attributes={this.state.attributes}/>
             <FileList files={this.state.files}
                       onDelete={this.onDelete}/>
             <PaginationBar links={this.state.links} pageSize={this.state.pageSize}

@@ -50,7 +50,7 @@ public class UploadRestController
         catch( ServletException | IOException e )
         {
             response.setStatus( 416 );
-            return "Somthings wrong with request";
+            return "Somethings wrong with request";
         }
     }
 
