@@ -15,7 +15,7 @@ export default class FileDetails extends React.Component {
         return (
             <tr>
                 <td>{this.props.file.name}</td>
-                <td>{this.props.file.description}</td>
+                <td>{this.props.file.notes}</td>
                 <td>{this.props.file.tags}</td>
                 <td>
                     <button onClick={this.handleDelete}>Delete</button>

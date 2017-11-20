@@ -1,9 +1,12 @@
-package com.library.PiLibrary.Storage.Files;
+/*
+ * Copyright (C) 2017 Nokia. All rights reserved.
+ */
+
+package com.library.PiLibrary.Storage.Comments;
 
 import com.library.PiLibrary.Storage.Commentable;
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -13,33 +16,32 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class UploadedFile implements Commentable
+public class Comment
+                implements Commentable
 {
     @Setter( AccessLevel.NONE )
     @GeneratedValue
     @Id
     private Long id;
-    private String name;
-    private String notes;
-    private String tags;
+    private String target;
+    private String content;
 
 
-    private UploadedFile()
+    public Comment()
     {
     }
 
 
-    public UploadedFile( String name, String notes, String tags )
+    public Comment( Commentable commentable, String content )
     {
-        this.name = name;
-        this.notes = notes;
-        this.tags = tags;
+        target = commentable.indetify();
+        this.content = content;
     }
 
 
     @Override
     public String indetify()
     {
-        return getName();
+        return "com" + getId();
     }
 }

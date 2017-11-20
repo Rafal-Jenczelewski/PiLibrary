@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
 import CreateDialog from './Dialogs/CreateDialog';
 import FileList from './FileList'
+import PaginationBar from "./Dialogs/PaginationBar";
 
 const client = require('../client');
 const follow = require('../follow');
@@ -83,7 +84,6 @@ class App extends Component {
     }
 
     updatePageSize(pageSize) {
-        console.log("page size updated");
         if (pageSize !== this.state.pageSize) {
             this.setState({
                 pageSize: pageSize
@@ -94,23 +94,25 @@ class App extends Component {
 
     componentDidMount() {
         this.loadFromServer(this.state.pageSize);
-        follow(client, root, [
-            {rel: 'uploadedFiles/findByName', params: {name: "test1.png"}}])
+        client({
+            method: "GET",
+            path: root + "/uploadedFiles/search"
+        });
+        client({
+            method: "GET",
+            path: root + "/comments"
+        });
     }
 
     render() {
         return (<div>
             <CreateDialog attributes={this.state.attributes} onCreate={this.onCreate}/>
             <FileList files={this.state.files}
-                          links={this.state.links}
-                          pageSize={this.state.pageSize}
-                          onNavigate={this.onNavigate}
-                          onDelete={this.onDelete}
-                          updatePageSize={this.updatePageSize}/>
-        </div>) 
+                      onDelete={this.onDelete}/>
+            <PaginationBar links={this.state.links} pageSize={this.state.pageSize}
+                           onNavigate={this.onNavigate} updatePageSize={this.updatePageSize}/>
+        </div>)
     }
 }
-
-export default App;
 
 ReactDOM.render(<App/>, document.getElementById('react'));
