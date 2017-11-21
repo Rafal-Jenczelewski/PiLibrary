@@ -128,10 +128,12 @@ class App extends Component {
         return (<div className={"App"}>
             <Banner/>
             <MenuBar onUpload={this.onCreate} attributes={this.state.attributes}/>
-            <FileList files={this.state.files}
-                      onDelete={this.onDelete}/>
-            <PaginationBar links={this.state.links} pageSize={this.state.pageSize}
-                           onNavigate={this.onNavigate} updatePageSize={this.updatePageSize}/>
+            <div>
+                <FileList files={this.state.files}
+                          onDelete={this.onDelete}/>
+                <PaginationBar links={this.state.links} pageSize={this.state.pageSize}
+                               onNavigate={this.onNavigate} updatePageSize={this.updatePageSize}/>
+            </div>
         </div>)
     }
 }

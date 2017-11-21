@@ -40,6 +40,6 @@ public class UploadedFile implements Commentable
     @Override
     public String indetify()
     {
-        return getName();
+        return this.name;
     }
 }

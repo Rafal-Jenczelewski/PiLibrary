@@ -33,7 +33,10 @@ public class DatabaseLoader
         fileRepository.save( files );
 
         List<Comment> comments = new ArrayList<>(  );
-        comments.add( new Comment(files.get( 0 ), "Najlepsze") );
+        comments.add( new Comment("test1.png", "Najlepsze") );
+        comments.add( new Comment("test2.png", "Koment do test2") );
+        comments.add( new Comment("com1", "Koment do com1") );
+        comments.add( new Comment("com2", "Koment do com2") );
         commentRepository.save( comments );
     }
 }

@@ -17,9 +17,8 @@ import javax.persistence.Id;
 @Data
 @Entity
 public class Comment
-                implements Commentable
-{
-    @Setter( AccessLevel.NONE )
+        implements Commentable {
+    @Setter(AccessLevel.NONE)
     @GeneratedValue
     @Id
     private Long id;
@@ -27,21 +26,16 @@ public class Comment
     private String content;
 
 
-    public Comment()
-    {
+    public Comment() {
     }
 
-
-    public Comment( Commentable commentable, String content )
-    {
-        target = commentable.indetify();
+    public Comment(String target, String content) {
+        this.target = target;
         this.content = content;
     }
 
-
     @Override
-    public String indetify()
-    {
+    public String indetify() {
         return "com" + getId();
     }
 }

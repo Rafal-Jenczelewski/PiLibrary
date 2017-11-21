@@ -27,7 +27,6 @@ body {
 
 .notes-input {
     height: 80px;
-    resize: none;
     width: 250px;
     margin: 5px;
 }
@@ -150,4 +149,40 @@ td {
     display: block;
     float: left;
     background-color: #606061;
+    position: fixed;
+    overflow: auto;
+}
+
+.file-page {
+    background-color: burlywood;
+    border: ridge beige;
+}
+
+.name-view {
+    display: flex;
+}
+
+.notes-view {
+    width: 500px;
+    height: 100px;
+    border-style: none;
+    background-color: beige;
+    display: block;
+}
+
+.tags-view {
+    width: 500px;
+    height: 20px;
+    display: block;
+    border-style: none;
+    background-color: beige;
+
+}
+
+.comment-page {
+    border-style: solid;
+}
+
+textarea {
+    resize: none;
 }
