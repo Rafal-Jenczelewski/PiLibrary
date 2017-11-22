@@ -40,7 +40,8 @@ public class SearchRestController
     {
         BasicLinkBuilder builder = BasicLinkBuilder.linkToCurrentMapping().slash( "uploadedFiles" )
                         .slash( uploadedFile.getId() );
-        return new Resource<>( uploadedFile, builder.withSelfRel(), builder.withRel( "uploadedFiles" ) );
+        return new Resource<>(
+                        uploadedFile, builder.withSelfRel(), builder.withRel( "uploadedFiles" ) );
     }
 
 
@@ -50,8 +51,7 @@ public class SearchRestController
     public ResponseEntity<Set<Resource<UploadedFile>>> search( @PathVariable( "searchString" ) String searchString )
     {
         Set<Resource<UploadedFile>> entities = new HashSet<>();
-        String[] tokens = searchString.split( "(?=#)" );
-
+        String[] tokens = searchString.split( " " );
 
         for( String token : tokens )
         {

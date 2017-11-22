@@ -2,6 +2,12 @@ body {
     margin: 0;
     padding: 0;
     font-family: sans-serif;
+    height: 100%;
+    display: flex;
+}
+
+html {
+    height: 100%;
 }
 
 .details-div {
@@ -36,22 +42,6 @@ body {
     margin: 5px;
 }
 
-table {
-    border-collapse: collapse;
-    margin: auto;
-}
-
-th {
-    border: 1px solid #999;
-    padding: 0.5rem;
-}
-
-td {
-    border: 1px solid #999;
-    padding: 0.5rem;
-    text-align: left;
-}
-
 /*Classes for creating dialogs*/
 
 .modalDialog {
@@ -76,6 +66,7 @@ td {
 }
 
 .modalDialog > div {
+    text-align: left !important;
     width: 400px;
     position: relative;
     margin: 10% auto;
@@ -108,79 +99,6 @@ td {
 
 .close:hover {
     background: #00d9ff;
-}
-
-.App {
-    text-align: center;
-}
-
-.App-logo {
-    animation: App-logo-spin infinite 20s linear;
-    height: 80px;
-}
-
-.App-header {
-    background: url("/images/backgroud1.jpg") center;
-    height: 150px;
-    padding: 20px;
-    color: white;
-}
-
-.App-title {
-    font-size: 1.5em;
-}
-
-.App-intro {
-    font-size: large;
-}
-
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.menu-bar {
-    width: 15%;
-    height: -webkit-fill-available;
-    display: block;
-    float: left;
-    background-color: #606061;
-    position: fixed;
-    overflow: auto;
-}
-
-.file-page {
-    background-color: burlywood;
-    border: ridge beige;
-}
-
-.name-view {
-    display: flex;
-}
-
-.notes-view {
-    width: 500px;
-    height: 100px;
-    border-style: none;
-    background-color: beige;
-    display: block;
-}
-
-.tags-view {
-    width: 500px;
-    height: 20px;
-    display: block;
-    border-style: none;
-    background-color: beige;
-
-}
-
-.comment-page {
-    border-style: solid;
 }
 
 textarea {

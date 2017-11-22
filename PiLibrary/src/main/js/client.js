@@ -14,7 +14,7 @@ registry.register('text/uri-list', api);
 registry.register('application/hal+json', rest0);
 
 module.exports = rest
-    .wrap(mime, { registry: registry })
+    .wrap(mime, {registry: registry})
     .wrap(uriTemplateInterceptor)
     .wrap(errorCode)
-    .wrap(defaultRequest, { headers: { 'Accept': 'application/hal+json' }});
+    .wrap(defaultRequest, {headers: {'Accept': 'application/hal+json'}});

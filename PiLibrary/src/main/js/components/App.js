@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import CreateDialog from './Dialogs/CreateDialog';
-import FileList from './FileList'
-import PaginationBar from "./Dialogs/PaginationBar";
+import CreateDialog from './file/CreateDialog';
+import FileList from './file/FileList'
+import PaginationBar from "./PaginationBar";
 import Banner from './Banner';
 import MenuBar from "./MenuBar";
 
@@ -14,17 +14,24 @@ class App extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {files: [], attributes: [], pageSize: 10, links: {}};
+        this.state = {
+            files: [],
+            attributes: [],
+            pageSize: 10,
+            links: {},
+            fromSearch: false,
+            searchTerm: ""
+        };
 
+        this.loadFromServer = this.loadFromServer.bind(this);
         this.updatePageSize = this.updatePageSize.bind(this);
-        this.onCreate = this.onCreate.bind(this);
-        this.onDelete = this.onDelete.bind(this);
         this.onNavigate = this.onNavigate.bind(this);
+        this.searchByString = this.searchByString.bind(this);
     }
 
-    loadFromServer(pageSize) {
+    loadFromServer() {
         follow(client, root, [
-            {rel: 'uploadedFiles', params: {size: pageSize}}]
+            {rel: 'uploadedFiles', params: {size: this.state.pageSize}}]
         ).then(filesCollection => {
             return client({
                 method: 'GET',
@@ -37,59 +44,11 @@ class App extends Component {
         }).done(filesCollection => {
             this.setState({
                 files: filesCollection.entity._embedded.uploadedFiles,
-                attributes: Object.keys(this.schema.properties),
-                pageSize: pageSize,
-                links: filesCollection.entity._links
+                links: filesCollection.entity._links,
+                fromSearch: false,
+                searchTerm: ""
             });
         });
-    }
-
-    onCreate(data) {
-        let formData = new FormData();
-
-        formData.append("file", data.file);
-        formData.append("name", data.name);
-        formData.append("notes", data.notes);
-        formData.append("tags", data.tags);
-
-        fetch(root + "/uploadedFiles/upload", {
-            mode: "cors",
-            body: formData,
-            method: "post",
-        }).then(response => this.loadFromServer(this.state.pageSize))
-
-        // client({
-        //     method: 'POST',
-        //     path: root + "/uploadedFiles/upload",
-        //     body: formData
-        // })
-        // follow(client, root, ['uploadedFiles']).then(fileCollection => {
-        //     return client({
-        //         method: 'POST',
-        //         path: fileCollection.entity._links.self.href,
-        //         entity: newFile,
-        //         headers: {'Content-Type': 'application/json'}
-        //     })
-        // }).then(response => {
-        //     return follow(client, root, [
-        //         {rel: 'uploadedFiles', params: {'size': this.state.pageSize}}]);
-        // }).done(response => {
-        //     if (typeof response.entity._links.last != "undefined") {
-        //         this.onNavigate(response.entity._links.last.href);
-        //     } else {
-        //         this.onNavigate(response.entity._links.self.href);
-        //     }
-        // });
-    }
-
-    onDelete(name) {
-        // client({method: 'DELETE', path: file._links.self.href}).done(response => {
-        //     this.loadFromServer(this.state.pageSize);
-        // });
-        fetch(root + "/uploadedFiles/delete/" + name, {
-            method: "delete",
-            mode: "cors",
-        }).then(response => this.loadFromServer(this.state.pageSize))
     }
 
     onNavigate(navUri) {
@@ -107,33 +66,52 @@ class App extends Component {
         if (pageSize !== this.state.pageSize) {
             this.setState({
                 pageSize: pageSize
-            });
-            this.loadFromServer(pageSize);
+            }, () => this.loadFromServer());
         }
     }
 
-    componentDidMount() {
-        this.loadFromServer(this.state.pageSize);
+    searchByString(searchString) {
         client({
-            method: "GET",
-            path: root + "/uploadedFiles/search"
-        });
-        client({
-            method: "GET",
-            path: root + "/comments"
+            method: 'get',
+            path: root + '/uploadedFiles/search/findWithTags/' + searchString
+        }).then(response => {
+            this.setState({
+                files: response.entity.sort((item1, item2) => {
+                    return item1.name.localeCompare(item2.name)
+                }),
+                links: [],
+                fromSearch: true,
+                searchTerm: searchString
+            })
         });
     }
 
+    componentDidMount() {
+        this.loadFromServer();
+    }
+
     render() {
-        return (<div className={"App"}>
-            <Banner/>
-            <MenuBar onUpload={this.onCreate} attributes={this.state.attributes}/>
-            <div>
-                <FileList files={this.state.files}
-                          onDelete={this.onDelete}/>
+        const fileList = <FileList files={this.state.files}
+                                   onDelete={this.loadFromServer}/>;
+
+        let content = null;
+        if (!this.state.fromSearch)
+            content = <div className="app-content">
+                {fileList}
                 <PaginationBar links={this.state.links} pageSize={this.state.pageSize}
                                onNavigate={this.onNavigate} updatePageSize={this.updatePageSize}/>
-            </div>
+            </div>;
+        else
+            content = <div className="app-content">
+                <span style={{float: "left"}}>Results for {this.state.searchTerm}:</span>
+                {fileList}
+            </div>;
+
+        return (<div className={"App"}>
+            <Banner/>
+            <MenuBar onUpload={this.loadFromServer} onEmptySearch={this.loadFromServer}
+                     search={this.searchByString}/>
+            {content}
         </div>)
     }
 }

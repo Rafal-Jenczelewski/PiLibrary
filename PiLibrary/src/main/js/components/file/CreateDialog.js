@@ -54,13 +54,21 @@ export default class CreateDialog extends React.Component {
 
     handleSubmit(e) {
         e.preventDefault();
-        let newFile = {
-            file: this.state.file,
-            name: this.state.name,
-            notes: this.state.notes,
-            tags: this.state.tags
-        };
-        this.props.onCreate(newFile);
+        let formData = new FormData();
+
+        formData.append("file", this.state.file);
+        formData.append("name", this.state.name);
+        formData.append("notes", this.state.notes);
+        formData.append("tags", this.state.tags);
+
+        fetch("api/uploadedFiles/upload", {
+            mode: "cors",
+            body: formData,
+            method: "post",
+        }).then(() => this.props.onCreate()
+        ).catch((error) => {
+            console.log(error);
+        });
 
         this.setState({
             name: "",
@@ -75,7 +83,9 @@ export default class CreateDialog extends React.Component {
     render() {
         return (
             <div>
-                <a href="#createFile">Create</a>
+                <a href="#createFile">
+                    <button className="btn">Create</button>
+                </a>
 
                 <div id="createFile" className="modalDialog">
                     <div>
@@ -90,10 +100,12 @@ export default class CreateDialog extends React.Component {
                                       onChange={this.onNotesChangeHandler}/>
                             <input type="text" placeholder="Tags" className="text-input"
                                    onChange={this.onTagsChangeHandler}/>
-                            <input className="text-input" type="file" onChange={this.onFileClickHandler}
+                            <input className="text-input" type="file"
+                                   onChange={this.onFileClickHandler}
                                    onClick={(event) => event.target.value = null}/>
-                            <button disabled={this.state.file === undefined || !this.state.isNameValid}
-                                    onClick={this.handleSubmit}>Create
+                            <button
+                                disabled={this.state.file === undefined || !this.state.isNameValid}
+                                onClick={this.handleSubmit}>Create
                             </button>
                         </form>
                     </div>

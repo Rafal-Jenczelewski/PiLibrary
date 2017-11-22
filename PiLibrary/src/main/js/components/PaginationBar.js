@@ -41,7 +41,6 @@ export default class PaginationBar extends React.Component {
     }
 
     render() {
-        console.log(this.props);
         let navLinks = [];
         if ("first" in this.props.links) {
             navLinks.push(<button key="first" onClick={this.handleNavFirst}>&lt;&lt;</button>);

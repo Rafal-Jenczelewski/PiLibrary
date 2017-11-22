@@ -1,11 +1,14 @@
 import React from 'react'
-import CreateDialog from './Dialogs/CreateDialog'
+import CreateDialog from './file/CreateDialog'
+import SearchBox from './SearchBox'
 
 export default class MenuBar extends React.Component {
     render() {
         return (<div className={"menu-bar"}>
-            <CreateDialog attributes={this.props.attributes} onCreate={this.props.onUpload}/>
-                <span>User</span>
+            <div className="menu-element"><CreateDialog onCreate={this.props.onUpload}/></div>
+            <div className="menu-element"><SearchBox search={this.props.search}
+                                                     onEmptySearch={this.props.onEmptySearch}/>
+            </div>
         </div>)
     }
 }

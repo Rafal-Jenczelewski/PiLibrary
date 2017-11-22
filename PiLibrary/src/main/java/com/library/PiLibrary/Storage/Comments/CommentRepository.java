@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 
-public interface CommentRepository extends CrudRepository<Comment, Long>
+public interface CommentRepository
+                extends CrudRepository<Comment, Long>
 {
-    List<Comment> findByTarget(@Param("target")String target);
+    List<Comment> findByTarget( @Param( "target" ) String target );
 }

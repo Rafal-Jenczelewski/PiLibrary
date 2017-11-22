@@ -13,7 +13,8 @@ import javax.persistence.Id;
 
 @Data
 @Entity
-public class UploadedFile implements Commentable
+public class UploadedFile
+                implements Commentable
 {
     @Setter( AccessLevel.NONE )
     @GeneratedValue
