@@ -1,6 +1,7 @@
 import React from 'react'
 import Comment from '../comment/Comment'
 import CommentDialog from '../comment/CommentDialog'
+import fileDownload from 'js-file-download'
 import client from '../../client'
 
 export default class FilePage extends React.Component {
@@ -13,10 +14,22 @@ export default class FilePage extends React.Component {
 
         this.loadCommentsFromServer = this.loadCommentsFromServer.bind(this);
         this.onDeleteHandler = this.onDeleteHandler.bind(this);
+        this.fetchFile = this.fetchFile.bind(this);
     }
 
     componentDidMount() {
         this.loadCommentsFromServer();
+    }
+
+    fetchFile() {
+        fetch("api/uploadedFiles/download/" + this.props.file.name, {
+            method: "get",
+            mode: "cors"
+        }).then(response => {
+            return response.text();
+        }).then(data => {
+            fileDownload(data, this.props.file.name)
+        })
     }
 
     loadCommentsFromServer() {
@@ -48,7 +61,7 @@ export default class FilePage extends React.Component {
                 <div className="comment-footer"><CommentDialog
                     onComment={this.loadCommentsFromServer} target={this.props.file.name}/>
                     <button onClick={this.onDeleteHandler}>Delete</button>
-                    <button onClick={() => alert("Nie dziaja ;c")}>Download</button>
+                    <button onClick={this.fetchFile}>Download</button>
                 </div>
             </div>
             {comments}
