@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import {bindActionCreators} from 'redux';
+import {getAllFiles} from '../actions/index'
 
 export default class CreateDialog extends React.Component {
 
@@ -113,5 +115,20 @@ export default class CreateDialog extends React.Component {
             </div>
         )
     }
-
 }
+
+function mapStateToProps(state) {
+    return {
+        files: state.files,
+        links: state.links
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        getAllFiles: getAllFiles,
+        searchByString: searchByString
+    }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(MenuBar);

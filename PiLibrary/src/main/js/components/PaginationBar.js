@@ -1,5 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {changePageSize, navigate} from '../actions/index'
 
 export default class PaginationBar extends React.Component {
     constructor(props) {
@@ -16,28 +19,28 @@ export default class PaginationBar extends React.Component {
         e.preventDefault();
         let pageSize = e.target.value;
         if (/^[0-9]+$/.test(pageSize)) {
-            this.props.updatePageSize(pageSize);
+            this.props.changePageSize(pageSize);
         }
     }
 
     handleNavFirst(e) {
         e.preventDefault();
-        this.props.onNavigate(this.props.links.first.href);
+        this.props.navigate(this.props.links.first.href);
     }
 
     handleNavPrev(e) {
         e.preventDefault();
-        this.props.onNavigate(this.props.links.prev.href);
+        this.props.navigate(this.props.links.prev.href);
     }
 
     handleNavNext(e) {
         e.preventDefault();
-        this.props.onNavigate(this.props.links.next.href);
+        this.props.navigate(this.props.links.next.href);
     }
 
     handleNavLast(e) {
         e.preventDefault();
-        this.props.onNavigate(this.props.links.last.href);
+        this.props.navigate(this.props.links.last.href);
     }
 
     render() {
@@ -64,3 +67,19 @@ export default class PaginationBar extends React.Component {
         </div>)
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        pageSize: state.pageSize,
+        links: state.links
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        changePageSize: changePageSize,
+        navigate: navigate
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PaginationBar);
