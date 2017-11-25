@@ -7,6 +7,7 @@ import com.library.PiLibrary.Storage.Files.UploadedFile;
 import com.library.PiLibrary.Storage.StorageException;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,7 @@ public class UploadRestController
     private CommentRepository commentRepository;
 
 
+    @PreAuthorize("isAuthenticated()")
     @RequestMapping( value = "api/uploadedFiles/upload",
                     method = RequestMethod.POST )
     @ResponseBody
