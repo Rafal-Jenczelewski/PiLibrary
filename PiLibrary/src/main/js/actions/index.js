@@ -1,6 +1,7 @@
 import client from '../client'
 import follow from '../follow'
-import {myStore} from '../index'
+import myStore from '../store'
+import fileDownload from 'js-file-download'
 
 const root = "/api/";
 
@@ -39,30 +40,81 @@ export const searchByString = (searchString) => {
     }
 }
 
-const setFiles = (data) => {
+const setFiles = (files) => {
     return {
         type: "SET_FILES",
-        payload: data
+        payload: files
     }
 };
 
-const setLinks = (data) => {
+const setLinks = (links) => {
     return {
         type: "SET_LINKS",
-        payload: data
+        payload: links
     }
 };
 
 
-export const changePageSize = (data) => {
+export const changePageSize = (pageSize) => {
     return dispatch => {
-        dispatch(setPageSize(data)).then(getAllFiles());
+        dispatch(setPageSize(pageSize)).then(getAllFiles());
     }
 };
 
-const setPageSize = (data) => {
+const setPageSize = (pageSize) => {
     return {
         type: "SET_PAGE_SIZE",
-        payload: data
+        payload: pageSize
     }
+};
+
+export const uploadFile = (data) => {
+    return dispatch => {
+        return fetch(root + "/uploadedFiles/upload", {
+            mode: "cors",
+            body: data,
+            method: "post",
+        }).then(dispatch(getAllFiles()));
+    }
+};
+
+export const loadComments = (data) => {
+    return dispatch => {
+        return client({
+            method: 'GET',
+            path: "api/comments/search/findByTarget?target=" + data
+        }).then(response => {
+            return response.entity._embedded.comments
+        })
+    }
+};
+
+export const deleteFile = (data) => {
+    return dispatch => {
+        return fetch("api/uploadedFiles/delete/" + data, {
+            method: "delete",
+            mode: "cors",
+        }).then(() => dispatch(getAllFiles()))
+    }
+};
+
+export const uploadComment = (data) => {
+    return dispatch => {
+        return fetch("api/comments/comment", {
+            mode: 'cors',
+            body: formData,
+            method: 'post'
+        }).then(() => dispatch(getAllFiles()))
+    }
+};
+
+export const downloadFile = (fileName) => {
+    fetch("api/uploadedFiles/download/" + fileName, {
+        method: "get",
+        mode: "cors"
+    }).then(response => {
+        return response.text();
+    }).then(data => {
+        fileDownload(data, fileName)
+    })
 };

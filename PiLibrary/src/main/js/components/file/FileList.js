@@ -1,11 +1,8 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getAllFiles} from '../../actions/index'
-import FileDetails from './FileDetails'
 import FilePage from './FilePage'
-import client from '../../client'
 
 class FileList extends React.Component {
 

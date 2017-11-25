@@ -1,6 +1,9 @@
 import React from 'react'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {getAllFiles} from '../actions/index'
 
-export default class SearchBox extends React.Component {
+class SearchBox extends React.Component {
     constructor(props) {
         super(props);
 
@@ -37,3 +40,17 @@ export default class SearchBox extends React.Component {
         </div>)
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        files: state.files,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        getAllFiles: getAllFiles
+    }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SearchBox);

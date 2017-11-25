@@ -1,7 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {uploadComment} from '../../actions/index'
 
-export default class CreateDialog extends React.Component {
+class CommentDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -30,13 +32,7 @@ export default class CreateDialog extends React.Component {
         formData.append("target", this.state.target);
         formData.append("content", this.state.content);
 
-        fetch("api/comments/comment", {
-            mode: 'cors',
-            body: formData,
-            method: 'post'
-        }).then(() => this.props.onComment())
-            .catch((error) =>
-                console.log(error));
+        this.props.uploadComment(formData);
 
         this.setState({
             content: ""
@@ -70,5 +66,12 @@ export default class CreateDialog extends React.Component {
             </div>
         )
     }
-
 }
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        uploadComment: uploadComment
+    }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(CommentDialog);

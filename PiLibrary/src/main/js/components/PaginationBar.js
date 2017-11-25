@@ -1,10 +1,9 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {changePageSize, navigate} from '../actions/index'
 
-export default class PaginationBar extends React.Component {
+class PaginationBar extends React.Component {
     constructor(props) {
         super(props);
 

@@ -1,10 +1,11 @@
 import React from 'react'
 import Comment from '../comment/Comment'
 import CommentDialog from '../comment/CommentDialog'
-import fileDownload from 'js-file-download'
-import client from '../../client'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {deleteFile, downloadFile, loadComments} from '../../actions/index'
 
-export default class FilePage extends React.Component {
+class FilePage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -22,29 +23,20 @@ export default class FilePage extends React.Component {
     }
 
     fetchFile() {
-        fetch("api/uploadedFiles/download/" + this.props.file.name, {
-            method: "get",
-            mode: "cors"
-        }).then(response => {
-            return response.text();
-        }).then(data => {
-            fileDownload(data, this.props.file.name)
-        })
+        this.props.downloadFile(this.props.file.name);
     }
 
     loadCommentsFromServer() {
-        client({
-            method: "GET",
-            path: "/api/comments/search/findByTarget?target=" + this.props.file.name
-        }).then(response => {
+        let p = Promise.resolve(this.props.loadComments(this.props.file.name));
+        p.then((response) => {
             this.setState({
-                comments: response.entity._embedded.comments
+                comments: response
             })
         })
     }
 
     onDeleteHandler() {
-        this.props.onDelete(this.props.file.name);
+        this.props.deleteFile(this.props.file.name);
     }
 
     render() {
@@ -68,3 +60,13 @@ export default class FilePage extends React.Component {
         </div>)
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        deleteFile: deleteFile,
+        downloadFile: downloadFile,
+        loadComments: loadComments
+    }, dispatch);
+}
+
+export default connect(null, mapDispatchToProps)(FilePage);

@@ -1,15 +1,11 @@
 import React, {Component} from 'react';
-import {Provider, connect} from 'react-redux';
+import {connect, Provider} from 'react-redux';
 import FileList from './file/FileList'
 import PaginationBar from "./PaginationBar";
 import Banner from './Banner';
 import MenuBar from "./MenuBar";
 import {bindActionCreators} from 'redux';
 import {getAllFiles, searchByString} from '../actions/index'
-
-const client = require('../client');
-const follow = require('../follow');
-const root = "/api";
 
 class App extends Component {
     constructor(props) {
@@ -54,8 +50,7 @@ class App extends Component {
 
         return (<div className={"App"}>
             <Banner/>
-            <MenuBar onUpload={this.props.getAllFiles} onEmptySearch={this.props.getAllFiles}
-                     search={this.searchByString}/>
+            <MenuBar onUpload={this.props.getAllFiles} search={this.searchByString}/>
             {content}
         </div>)
     }

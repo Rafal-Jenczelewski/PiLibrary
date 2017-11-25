@@ -1,9 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {bindActionCreators} from 'redux';
-import {getAllFiles} from '../actions/index'
+import {connect} from 'react-redux';
+import {uploadFile} from '../../actions/index'
 
-export default class CreateDialog extends React.Component {
+class CreateDialog extends React.Component {
 
     constructor(props) {
         super(props);
@@ -63,14 +63,7 @@ export default class CreateDialog extends React.Component {
         formData.append("notes", this.state.notes);
         formData.append("tags", this.state.tags);
 
-        fetch("api/uploadedFiles/upload", {
-            mode: "cors",
-            body: formData,
-            method: "post",
-        }).then(() => this.props.onCreate()
-        ).catch((error) => {
-            console.log(error);
-        });
+        this.props.uploadFile(formData);
 
         this.setState({
             name: "",
@@ -117,18 +110,10 @@ export default class CreateDialog extends React.Component {
     }
 }
 
-function mapStateToProps(state) {
-    return {
-        files: state.files,
-        links: state.links
-    }
-}
-
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getAllFiles: getAllFiles,
-        searchByString: searchByString
+        uploadFile: uploadFile
     }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(MenuBar);
+export default connect(null, mapDispatchToProps)(CreateDialog);

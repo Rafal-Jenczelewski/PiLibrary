@@ -1,14 +1,16 @@
 import React from 'react'
-import client from '../../client'
 import CommentDialog from './CommentDialog'
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import {loadComments} from '../../actions/index'
 
-export default class Comment extends React.Component {
+class Comment extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
             comments: []
-        }
+        };
 
         this.loadCommentFromServer = this.loadCommentFromServer.bind(this);
     }
@@ -18,21 +20,20 @@ export default class Comment extends React.Component {
     }
 
     loadCommentFromServer() {
-        client({
-            method: 'GET',
-            path: "api/comments/search/findByTarget?target=com" + this.props.comment.id
-        }).then(response => {
+        let p = Promise.resolve(this.props.loadComments("com" + this.props.comment.id));
+        p.then(response => {
             this.setState({
-                comments: response.entity._embedded.comments
+                comments: response
             })
         })
     }
 
     render() {
         let comments = [];
+
         for (let comment of this.state.comments)
-            comments.push(<Comment margin={this.props.margin + 15} key={comment.id}
-                                   comment={comment}/>)
+            comments.push(<ConnectedComment margin={this.props.margin + 15} key={comment.id}
+                                            comment={comment}/>)
 
         return (<div>
             <div style={{marginLeft: this.props.margin + "px"}}
@@ -46,3 +47,13 @@ export default class Comment extends React.Component {
         </div>)
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        loadComments: loadComments
+    }, dispatch);
+}
+
+const ConnectedComment = connect(null, mapDispatchToProps)(Comment);
+
+export default ConnectedComment

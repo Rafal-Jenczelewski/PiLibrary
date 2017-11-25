@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default class FileDetails extends React.Component {
+class FileDetails extends React.Component {
 
     constructor(props) {
         super(props);
