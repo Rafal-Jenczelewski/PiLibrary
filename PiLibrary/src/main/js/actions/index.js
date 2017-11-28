@@ -123,12 +123,30 @@ export const downloadFile = (fileName) => {
     })
 };
 
-export const login = (data) => {
+export const checkUser = (user, password) => {
     return dispatch => {
         return fetch("/login", {
             method: "post",
             mode: "cors",
-            body: data
+            headers: new Headers({"Authorization": "Basic " + user + ":" + password})
+        }).then(() => {
+            dispatch(login(user, password))
+        }).catch((error) => {
+            console.log(error);
         })
+    }
+}
+
+const login = (user, password) => {
+    return {
+        type: "LOGIN",
+        user: user,
+        password: password
+    }
+}
+
+export const logout = () => {
+    return {
+        type: "LOGOUT"
     }
 }

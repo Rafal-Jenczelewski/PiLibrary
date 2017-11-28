@@ -28,7 +28,7 @@ export const pageSizeReducer = (state = 10, action) => {
 export const authReducer = (state = {}, action) => {
     switch(action.type) {
         case "LOGIN":
-            return new Headers({"Authorization": "Basic " + action.payload});
+            return new Headers({"Authorization": "Basic " + action.user + ":" + action.password});
         case "LOGOUT":
             return {};
     }

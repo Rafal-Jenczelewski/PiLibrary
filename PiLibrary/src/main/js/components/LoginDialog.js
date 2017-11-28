@@ -1,8 +1,7 @@
 import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
-import {login} from '../actions/index'
-
+import {checkUser, logout} from '../actions/index'
 class LoginDialog extends React.Component {
 
     constructor(props) {
@@ -16,6 +15,7 @@ class LoginDialog extends React.Component {
         this.onUserChangeHandler = this.onUserChangeHandler.bind(this);
         this.onPasswordChangeHandler = this.onPasswordChangeHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleLogoutClick =this.handleLogoutClick.bind(this);
     }
 
     onUserChangeHandler(e) {
@@ -37,9 +37,9 @@ class LoginDialog extends React.Component {
         let formData = new FormData();
 
         formData.append("username", this.state.user);
-        formData.append("password", btoa(this.state.password));
+        formData.append("password", this.state.password);
 
-        this.props.login(formData);
+        this.props.login(this.state.user, btoa(this.state.password));
 
         this.setState({
             user: "",
@@ -48,12 +48,22 @@ class LoginDialog extends React.Component {
         window.location = "#";
     }
 
+    handleLogoutClick() {
+        this.props.logout();
+    }
+
     render() {
+        let button = null;
+        if (this.props.authHeader)
+            button = <a href="#loginDialog">
+                <button className="btn">Log in</button>
+            </a>
+        else
+            button = <button onClick={this.handleLogoutClick}>Log out</button>
+
         return (
             <div>
-                <a href="#loginDialog">
-                    <button className="btn">Login</button>
-                </a>
+                {button}
 
                 <div id="loginDialog" className="modalDialog">
                     <div>
@@ -65,9 +75,9 @@ class LoginDialog extends React.Component {
                             <input type="text" placeholder="Username" className="text-input"
                                    onChange={this.onUserChangeHandler}/>
                             <input type="password" placeholder="Description" className="text-input"
-                                      onChange={this.onPasswordChangeHandler}/>
+                                   onChange={this.onPasswordChangeHandler}/>
                             <button
-                                onClick={this.handleSubmit}>Login
+                                onClick={this.handleSubmit}>Log in
                             </button>
                         </form>
                     </div>
@@ -77,10 +87,17 @@ class LoginDialog extends React.Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        authHeader: state.authHeader
+    }
+}
+
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        login: login
+        login: checkUser,
+        logout: logout
     }, dispatch);
 }
 
-export default connect(null, mapDispatchToProps)(LoginDialog);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginDialog);

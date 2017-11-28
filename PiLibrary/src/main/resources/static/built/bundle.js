@@ -21141,7 +21141,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.login = exports.downloadFile = exports.uploadComment = exports.deleteFile = exports.loadComments = exports.uploadFile = exports.changePageSize = exports.searchByString = exports.navigate = exports.getAllFiles = undefined;
+	exports.logout = exports.checkUser = exports.downloadFile = exports.uploadComment = exports.deleteFile = exports.loadComments = exports.uploadFile = exports.changePageSize = exports.searchByString = exports.navigate = exports.getAllFiles = undefined;
 	
 	var _client = __webpack_require__(73);
 	
@@ -21228,9 +21228,7 @@
 	            mode: "cors",
 	            body: data,
 	            method: "post",
-	            headers: new Headers({
-	                "Authorization": "Basic " + btoa("user:pass")
-	            })
+	            headers: _store2.default.getState().authHeader
 	        }).then(dispatch(getAllFiles()));
 	    };
 	};
@@ -21250,7 +21248,8 @@
 	    return function (dispatch) {
 	        return fetch("api/uploadedFiles/delete/" + data, {
 	            method: "delete",
-	            mode: "cors"
+	            mode: "cors",
+	            headers: _store2.default.getState().authHeader
 	        }).then(function () {
 	            return dispatch(getAllFiles());
 	        });
@@ -21262,7 +21261,8 @@
 	        return fetch("api/comments/comment", {
 	            mode: 'cors',
 	            body: formData,
-	            method: 'post'
+	            method: 'post',
+	            headers: _store2.default.getState().authHeader
 	        }).then(function () {
 	            return dispatch(getAllFiles());
 	        });
@@ -21272,7 +21272,8 @@
 	var downloadFile = exports.downloadFile = function downloadFile(fileName) {
 	    fetch("api/uploadedFiles/download/" + fileName, {
 	        method: "get",
-	        mode: "cors"
+	        mode: "cors",
+	        headers: _store2.default.getState().authHeader
 	    }).then(function (response) {
 	        return response.text();
 	    }).then(function (data) {
@@ -21280,13 +21281,31 @@
 	    });
 	};
 	
-	var login = exports.login = function login(data) {
+	var checkUser = exports.checkUser = function checkUser(user, password) {
 	    return function (dispatch) {
 	        return fetch("/login", {
 	            method: "post",
 	            mode: "cors",
-	            body: data
+	            headers: new Headers({ "Authorization": "Basic " + user + ":" + password })
+	        }).then(function () {
+	            dispatch(login(user, password));
+	        }).catch(function (error) {
+	            console.log(error);
 	        });
+	    };
+	};
+	
+	var login = function login(user, password) {
+	    return {
+	        type: "LOGIN",
+	        user: user,
+	        password: password
+	    };
+	};
+	
+	var logout = exports.logout = function logout() {
+	    return {
+	        type: "LOGOUT"
 	    };
 	};
 
@@ -28143,7 +28162,8 @@
 	exports.default = (0, _redux.combineReducers)({
 	    files: reducers.filesReducer,
 	    links: reducers.linksReducer,
-	    pageSize: reducers.pageSizeReducer
+	    pageSize: reducers.pageSizeReducer,
+	    authHeader: reducers.authReducer
 	});
 
 /***/ }),
@@ -28186,6 +28206,20 @@
 	    switch (action.type) {
 	        case "SET_PAGE_SIZE":
 	            return action.payload;
+	    }
+	
+	    return state;
+	};
+	
+	var authReducer = exports.authReducer = function authReducer() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+	    var action = arguments[1];
+	
+	    switch (action.type) {
+	        case "LOGIN":
+	            return new Headers({ "Authorization": "Basic " + action.user + ":" + action.password });
+	        case "LOGOUT":
+	            return {};
 	    }
 	
 	    return state;
@@ -29259,6 +29293,7 @@
 	        _this.onUserChangeHandler = _this.onUserChangeHandler.bind(_this);
 	        _this.onPasswordChangeHandler = _this.onPasswordChangeHandler.bind(_this);
 	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        _this.handleLogoutClick = _this.handleLogoutClick.bind(_this);
 	        return _this;
 	    }
 	
@@ -29286,7 +29321,7 @@
 	            formData.append("username", this.state.user);
 	            formData.append("password", this.state.password);
 	
-	            this.props.login(formData);
+	            this.props.login(this.state.user, btoa(this.state.password));
 	
 	            this.setState({
 	                user: "",
@@ -29295,20 +29330,32 @@
 	            window.location = "#";
 	        }
 	    }, {
+	        key: 'handleLogoutClick',
+	        value: function handleLogoutClick() {
+	            this.props.logout();
+	        }
+	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var button = null;
+	            if (this.props.authHeader) button = _react2.default.createElement(
+	                'a',
+	                { href: '#loginDialog' },
+	                _react2.default.createElement(
+	                    'button',
+	                    { className: 'btn' },
+	                    'Log in'
+	                )
+	            );else button = _react2.default.createElement(
+	                'button',
+	                { onClick: this.handleLogoutClick },
+	                'Log out'
+	            );
+	
 	            return _react2.default.createElement(
 	                'div',
 	                null,
-	                _react2.default.createElement(
-	                    'a',
-	                    { href: '#loginDialog' },
-	                    _react2.default.createElement(
-	                        'button',
-	                        { className: 'btn' },
-	                        'Login'
-	                    )
-	                ),
+	                button,
 	                _react2.default.createElement(
 	                    'div',
 	                    { id: 'loginDialog', className: 'modalDialog' },
@@ -29336,7 +29383,7 @@
 	                                'button',
 	                                {
 	                                    onClick: this.handleSubmit },
-	                                'Login'
+	                                'Log in'
 	                            )
 	                        )
 	                    )
@@ -29348,13 +29395,20 @@
 	    return LoginDialog;
 	}(_react2.default.Component);
 	
+	function mapStateToProps(state) {
+	    return {
+	        authHeader: state.authHeader
+	    };
+	}
+	
 	function mapDispatchToProps(dispatch) {
 	    return (0, _redux.bindActionCreators)({
-	        login: _index.login
+	        login: _index.checkUser,
+	        logout: _index.logout
 	    }, dispatch);
 	}
 	
-	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(LoginDialog);
+	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(LoginDialog);
 
 /***/ })
 /******/ ]);
