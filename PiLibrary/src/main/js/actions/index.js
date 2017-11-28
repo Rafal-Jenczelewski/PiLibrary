@@ -74,6 +74,7 @@ export const uploadFile = (data) => {
             mode: "cors",
             body: data,
             method: "post",
+            headers: myStore.getState().authHeader
         }).then(dispatch(getAllFiles()));
     }
 };
@@ -94,6 +95,7 @@ export const deleteFile = (data) => {
         return fetch("api/uploadedFiles/delete/" + data, {
             method: "delete",
             mode: "cors",
+            headers: myStore.getState().authHeader
         }).then(() => dispatch(getAllFiles()))
     }
 };
@@ -103,7 +105,8 @@ export const uploadComment = (data) => {
         return fetch("api/comments/comment", {
             mode: 'cors',
             body: formData,
-            method: 'post'
+            method: 'post',
+            headers: myStore.getState().authHeader
         }).then(() => dispatch(getAllFiles()))
     }
 };
@@ -111,10 +114,21 @@ export const uploadComment = (data) => {
 export const downloadFile = (fileName) => {
     fetch("api/uploadedFiles/download/" + fileName, {
         method: "get",
-        mode: "cors"
+        mode: "cors",
+        headers: myStore.getState().authHeader
     }).then(response => {
         return response.text();
     }).then(data => {
         fileDownload(data, fileName)
     })
 };
+
+export const login = (data) => {
+    return dispatch => {
+        return fetch("/login", {
+            method: "post",
+            mode: "cors",
+            body: data
+        })
+    }
+}

@@ -21141,7 +21141,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.downloadFile = exports.uploadComment = exports.deleteFile = exports.loadComments = exports.uploadFile = exports.changePageSize = exports.searchByString = exports.navigate = exports.getAllFiles = undefined;
+	exports.login = exports.downloadFile = exports.uploadComment = exports.deleteFile = exports.loadComments = exports.uploadFile = exports.changePageSize = exports.searchByString = exports.navigate = exports.getAllFiles = undefined;
 	
 	var _client = __webpack_require__(73);
 	
@@ -21227,7 +21227,10 @@
 	        return fetch(root + "/uploadedFiles/upload", {
 	            mode: "cors",
 	            body: data,
-	            method: "post"
+	            method: "post",
+	            headers: new Headers({
+	                "Authorization": "Basic " + btoa("user:pass")
+	            })
 	        }).then(dispatch(getAllFiles()));
 	    };
 	};
@@ -21275,6 +21278,16 @@
 	    }).then(function (data) {
 	        (0, _jsFileDownload2.default)(data, fileName);
 	    });
+	};
+	
+	var login = exports.login = function login(data) {
+	    return function (dispatch) {
+	        return fetch("/login", {
+	            method: "post",
+	            mode: "cors",
+	            body: data
+	        });
+	    };
 	};
 
 /***/ }),
@@ -28875,7 +28888,9 @@
 	
 	var _SearchBox2 = _interopRequireDefault(_SearchBox);
 	
-	var _reactRedux = __webpack_require__(28);
+	var _LoginDialog = __webpack_require__(148);
+	
+	var _LoginDialog2 = _interopRequireDefault(_LoginDialog);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -28904,6 +28919,11 @@
 	                    'div',
 	                    { className: 'menu-element' },
 	                    _react2.default.createElement(_CreateDialog2.default, null)
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { className: 'menu-element' },
+	                    _react2.default.createElement(_LoginDialog2.default, null)
 	                ),
 	                _react2.default.createElement(
 	                    'div',
@@ -29192,6 +29212,149 @@
 	}
 	
 	exports.default = (0, _reactRedux.connect)(mapStateToProps, mapDispatchToProps)(SearchBox);
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	var _redux = __webpack_require__(38);
+	
+	var _reactRedux = __webpack_require__(28);
+	
+	var _index = __webpack_require__(72);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var LoginDialog = function (_React$Component) {
+	    _inherits(LoginDialog, _React$Component);
+	
+	    function LoginDialog(props) {
+	        _classCallCheck(this, LoginDialog);
+	
+	        var _this = _possibleConstructorReturn(this, (LoginDialog.__proto__ || Object.getPrototypeOf(LoginDialog)).call(this, props));
+	
+	        _this.state = {
+	            user: "",
+	            password: ""
+	        };
+	
+	        _this.onUserChangeHandler = _this.onUserChangeHandler.bind(_this);
+	        _this.onPasswordChangeHandler = _this.onPasswordChangeHandler.bind(_this);
+	        _this.handleSubmit = _this.handleSubmit.bind(_this);
+	        return _this;
+	    }
+	
+	    _createClass(LoginDialog, [{
+	        key: 'onUserChangeHandler',
+	        value: function onUserChangeHandler(e) {
+	            var value = e.target.value;
+	            this.setState({
+	                user: value
+	            });
+	        }
+	    }, {
+	        key: 'onPasswordChangeHandler',
+	        value: function onPasswordChangeHandler(e) {
+	            this.setState({
+	                password: e.target.value
+	            });
+	        }
+	    }, {
+	        key: 'handleSubmit',
+	        value: function handleSubmit(e) {
+	            e.preventDefault();
+	            var formData = new FormData();
+	
+	            formData.append("username", this.state.user);
+	            formData.append("password", this.state.password);
+	
+	            this.props.login(formData);
+	
+	            this.setState({
+	                user: "",
+	                password: ""
+	            });
+	            window.location = "#";
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            return _react2.default.createElement(
+	                'div',
+	                null,
+	                _react2.default.createElement(
+	                    'a',
+	                    { href: '#loginDialog' },
+	                    _react2.default.createElement(
+	                        'button',
+	                        { className: 'btn' },
+	                        'Login'
+	                    )
+	                ),
+	                _react2.default.createElement(
+	                    'div',
+	                    { id: 'loginDialog', className: 'modalDialog' },
+	                    _react2.default.createElement(
+	                        'div',
+	                        null,
+	                        _react2.default.createElement(
+	                            'a',
+	                            { href: '#', title: 'Close', className: 'close' },
+	                            'X'
+	                        ),
+	                        _react2.default.createElement(
+	                            'h2',
+	                            null,
+	                            'Type you username and password'
+	                        ),
+	                        _react2.default.createElement(
+	                            'form',
+	                            null,
+	                            _react2.default.createElement('input', { type: 'text', placeholder: 'Username', className: 'text-input',
+	                                onChange: this.onUserChangeHandler }),
+	                            _react2.default.createElement('input', { type: 'password', placeholder: 'Description', className: 'text-input',
+	                                onChange: this.onPasswordChangeHandler }),
+	                            _react2.default.createElement(
+	                                'button',
+	                                {
+	                                    onClick: this.handleSubmit },
+	                                'Login'
+	                            )
+	                        )
+	                    )
+	                )
+	            );
+	        }
+	    }]);
+	
+	    return LoginDialog;
+	}(_react2.default.Component);
+	
+	function mapDispatchToProps(dispatch) {
+	    return (0, _redux.bindActionCreators)({
+	        login: _index.login
+	    }, dispatch);
+	}
+	
+	exports.default = (0, _reactRedux.connect)(null, mapDispatchToProps)(LoginDialog);
 
 /***/ })
 /******/ ]);

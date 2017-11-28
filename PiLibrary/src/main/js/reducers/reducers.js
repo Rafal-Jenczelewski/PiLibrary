@@ -24,3 +24,14 @@ export const pageSizeReducer = (state = 10, action) => {
 
     return state;
 };
+
+export const authReducer = (state = {}, action) => {
+    switch(action.type) {
+        case "LOGIN":
+            return new Headers({"Authorization": "Basic " + action.payload});
+        case "LOGOUT":
+            return {};
+    }
+
+    return state;
+}

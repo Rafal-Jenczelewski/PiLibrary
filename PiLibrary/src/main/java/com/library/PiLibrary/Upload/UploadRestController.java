@@ -35,7 +35,7 @@ public class UploadRestController
     private CommentRepository commentRepository;
 
 
-    @PreAuthorize("isAuthenticated()")
+    //@PreAuthorize("isAuthenticated()")
     @RequestMapping( value = "api/uploadedFiles/upload",
                     method = RequestMethod.POST )
     @ResponseBody
