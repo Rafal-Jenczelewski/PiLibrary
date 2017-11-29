@@ -35,3 +35,12 @@ export const authReducer = (state = {}, action) => {
 
     return state;
 }
+
+export const messageReducer = (state = {error: false, msg: ""}, action) => {
+    switch (action.type) {
+        case "SET_MSG":
+            return Object.assign({}, action.payload);
+    }
+
+    return state;
+}

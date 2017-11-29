@@ -20,13 +20,13 @@ class App extends Component {
     }
 
     searchByString(searchString) {
-        this.props.searchByString
-            .then(() => {
-                this.setState({
-                    fromSearch: true,
-                    searchTerm: searchString
-                })
-            });
+        let p = Promise.resolve(this.props.searchByString(searchString));
+        p.then(() => {
+            this.setState({
+                fromSearch: true,
+                searchTerm: searchString
+            })
+        });
     }
 
     componentDidMount() {

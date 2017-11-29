@@ -18,7 +18,7 @@ class FilePage extends React.Component {
         this.fetchFile = this.fetchFile.bind(this);
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.loadCommentsFromServer();
     }
 

@@ -18285,7 +18285,8 @@
 	        value: function searchByString(searchString) {
 	            var _this2 = this;
 	
-	            this.props.searchByString.then(function () {
+	            var p = Promise.resolve(this.props.searchByString(searchString));
+	            p.then(function () {
 	                _this2.setState({
 	                    fromSearch: true,
 	                    searchTerm: searchString
@@ -21174,10 +21175,17 @@
 	
 	var navigate = exports.navigate = function navigate(link) {
 	    return function (dispatch) {
-	        (0, _client2.default)({ method: 'GET', path: link }).then(function (response) {
+	        return (0, _client2.default)({ method: 'GET', path: link }).then(function (response) {
 	            dispatch(setFiles(response.entity._embedded.uploadedFiles));
 	            dispatch(setLinks(response.entity._links));
 	        });
+	    };
+	};
+	
+	var setMsg = function setMsg(error, msg) {
+	    return {
+	        type: "SET_MSG",
+	        payload: { error: error, msg: msg }
 	    };
 	};
 	
@@ -21211,7 +21219,8 @@
 	
 	var changePageSize = exports.changePageSize = function changePageSize(pageSize) {
 	    return function (dispatch) {
-	        dispatch(setPageSize(pageSize)).then(getAllFiles());
+	        dispatch(setPageSize(pageSize));
+	        dispatch(getAllFiles());
 	    };
 	};
 	
@@ -21260,7 +21269,7 @@
 	    return function (dispatch) {
 	        return fetch("api/comments/comment", {
 	            mode: 'cors',
-	            body: formData,
+	            body: data,
 	            method: 'post',
 	            headers: _store2.default.getState().authHeader
 	        }).then(function () {
@@ -21269,16 +21278,30 @@
 	    };
 	};
 	
-	var downloadFile = exports.downloadFile = function downloadFile(fileName) {
-	    fetch("api/uploadedFiles/download/" + fileName, {
-	        method: "get",
-	        mode: "cors",
-	        headers: _store2.default.getState().authHeader
-	    }).then(function (response) {
-	        return response.text();
-	    }).then(function (data) {
-	        (0, _jsFileDownload2.default)(data, fileName);
+	var checkResponseStatusAndThrow = function checkResponseStatusAndThrow(response) {
+	    if (response.status !== 200) throw Promise.resolve(response.text());
+	};
+	
+	var catchErrorAndDispatchMsg = function catchErrorAndDispatchMsg(dispatch, error) {
+	    console.log("catch!");
+	    error.then(function (err) {
+	        return dispatch(setMsg(true, err));
 	    });
+	};
+	
+	var downloadFile = exports.downloadFile = function downloadFile(fileName) {
+	    return function (dispatch) {
+	        return fetch("api/uploadedFiles/download/" + fileName, {
+	            method: "get",
+	            mode: "cors",
+	            headers: _store2.default.getState().authHeader
+	        }).then(function (response) {
+	            checkResponseStatusAndThrow(response);
+	            return response.text();
+	        }).then(function (data) {
+	            (0, _jsFileDownload2.default)(data, fileName);
+	        }).catch(catchErrorAndDispatchMsg.bind(dispatch));
+	    };
 	};
 	
 	var checkUser = exports.checkUser = function checkUser(user, password) {
@@ -28163,7 +28186,8 @@
 	    files: reducers.filesReducer,
 	    links: reducers.linksReducer,
 	    pageSize: reducers.pageSizeReducer,
-	    authHeader: reducers.authReducer
+	    authHeader: reducers.authReducer,
+	    message: reducers.messageReducer
 	});
 
 /***/ }),
@@ -28220,6 +28244,18 @@
 	            return new Headers({ "Authorization": "Basic " + action.user + ":" + action.password });
 	        case "LOGOUT":
 	            return {};
+	    }
+	
+	    return state;
+	};
+	
+	var messageReducer = exports.messageReducer = function messageReducer() {
+	    var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : { error: false, msg: "" };
+	    var action = arguments[1];
+	
+	    switch (action.type) {
+	        case "SET_MSG":
+	            return Object.assign({}, action.payload);
 	    }
 	
 	    return state;
@@ -28318,8 +28354,8 @@
 	    }
 	
 	    _createClass(FilePage, [{
-	        key: 'componentDidMount',
-	        value: function componentDidMount() {
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
 	            this.loadCommentsFromServer();
 	        }
 	    }, {

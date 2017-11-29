@@ -18,7 +18,7 @@ public class FileRepositoryImpl
     @Autowired
     FileRepository fileRepository;
 
-    static String resourcePath = "G:/PiLibrary/files/";
+    static String resourcePath = "/home/pi/Documents/PiLibrary/files/";
 
 
     @Override

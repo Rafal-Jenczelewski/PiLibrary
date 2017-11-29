@@ -18,11 +18,18 @@ export const getAllFiles = () => {
 
 export const navigate = (link) => {
     return dispatch => {
-        client({method: 'GET', path: link})
+        return client({method: 'GET', path: link})
             .then(response => {
                 dispatch(setFiles(response.entity._embedded.uploadedFiles));
                 dispatch(setLinks(response.entity._links));
             })
+    }
+};
+
+const setMsg = (error, msg) => {
+    return {
+        type: "SET_MSG",
+        payload: {error: error, msg: msg}
     }
 };
 
@@ -57,7 +64,8 @@ const setLinks = (links) => {
 
 export const changePageSize = (pageSize) => {
     return dispatch => {
-        dispatch(setPageSize(pageSize)).then(getAllFiles());
+        dispatch(setPageSize(pageSize))
+        dispatch(getAllFiles());
     }
 };
 
@@ -104,23 +112,36 @@ export const uploadComment = (data) => {
     return dispatch => {
         return fetch("api/comments/comment", {
             mode: 'cors',
-            body: formData,
+            body: data,
             method: 'post',
             headers: myStore.getState().authHeader
         }).then(() => dispatch(getAllFiles()))
     }
 };
 
+const checkResponseStatusAndThrow = (response) => {
+    if (response.status !== 200)
+        throw Promise.resolve(response.text());
+};
+
+const catchErrorAndDispatchMsg = (dispatch, error) => {
+    console.log("catch!");
+    error.then((err) => dispatch(setMsg(true, err)));
+}
+
 export const downloadFile = (fileName) => {
-    fetch("api/uploadedFiles/download/" + fileName, {
-        method: "get",
-        mode: "cors",
-        headers: myStore.getState().authHeader
-    }).then(response => {
-        return response.text();
-    }).then(data => {
-        fileDownload(data, fileName)
-    })
+    return dispatch => {
+        return fetch("api/uploadedFiles/download/" + fileName, {
+            method: "get",
+            mode: "cors",
+            headers: myStore.getState().authHeader
+        }).then(response => {
+            checkResponseStatusAndThrow(response);
+            return response.text();
+        }).then(data => {
+            fileDownload(data, fileName)
+        }).catch(catchErrorAndDispatchMsg.bind(dispatch))
+    }
 };
 
 export const checkUser = (user, password) => {

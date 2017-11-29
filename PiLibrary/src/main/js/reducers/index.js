@@ -5,5 +5,6 @@ export default combineReducers({
     files: reducers.filesReducer,
     links: reducers.linksReducer,
     pageSize: reducers.pageSizeReducer,
-    authHeader: reducers.authReducer
+    authHeader: reducers.authReducer,
+    message: reducers.messageReducer
 })
