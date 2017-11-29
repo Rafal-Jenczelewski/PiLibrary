@@ -140,7 +140,9 @@ export const downloadFile = (fileName) => {
             return response.text();
         }).then(data => {
             fileDownload(data, fileName)
-        }).catch(catchErrorAndDispatchMsg.bind(dispatch))
+        }).catch((error) => {
+            catchErrorAndDispatchMsg(dispatch, error)
+        })
     }
 };
 

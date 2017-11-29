@@ -104,3 +104,15 @@
 .search-input {
     width: 70%;
 }
+
+.box {
+    width: 100%;
+}
+
+.error-box {
+    background-color: red;
+}
+
+.msg-box {
+    background-color: green;
+}

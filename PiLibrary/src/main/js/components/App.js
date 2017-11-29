@@ -34,19 +34,26 @@ class App extends Component {
     }
 
     render() {
+        let msgBox = null;
+        if (this.props.message.msg)
+            msgBox = <span className={this.props.message.error ? "error-box box" : "msg-box box"}>{this.props.message.msg}</span>;
+
         const fileList = <FileList/>;
 
         let content = null;
         if (!this.state.fromSearch)
             content = <div className="app-content">
+                {msgBox}
                 {fileList}
                 <PaginationBar/>
             </div>;
         else
             content = <div className="app-content">
+                {msgBox}
                 <span style={{float: "left"}}>Results for {this.state.searchTerm}:</span>
                 {fileList}
             </div>;
+
 
         return (<div className={"App"}>
             <Banner/>
@@ -59,7 +66,8 @@ class App extends Component {
 function mapStateToProps(state) {
     return {
         files: state.files,
-        links: state.links
+        links: state.links,
+        message: state.message
     }
 }
 

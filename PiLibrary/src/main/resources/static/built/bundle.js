@@ -18301,17 +18301,26 @@
 	    }, {
 	        key: 'render',
 	        value: function render() {
+	            var msgBox = null;
+	            if (this.props.message.msg) msgBox = _react2.default.createElement(
+	                'span',
+	                { className: this.props.message.error ? "error-box box" : "msg-box box" },
+	                this.props.message.msg
+	            );
+	
 	            var fileList = _react2.default.createElement(_FileList2.default, null);
 	
 	            var content = null;
 	            if (!this.state.fromSearch) content = _react2.default.createElement(
 	                'div',
 	                { className: 'app-content' },
+	                msgBox,
 	                fileList,
 	                _react2.default.createElement(_PaginationBar2.default, null)
 	            );else content = _react2.default.createElement(
 	                'div',
 	                { className: 'app-content' },
+	                msgBox,
 	                _react2.default.createElement(
 	                    'span',
 	                    { style: { float: "left" } },
@@ -18338,7 +18347,8 @@
 	function mapStateToProps(state) {
 	    return {
 	        files: state.files,
-	        links: state.links
+	        links: state.links,
+	        message: state.message
 	    };
 	}
 	
@@ -21300,7 +21310,9 @@
 	            return response.text();
 	        }).then(function (data) {
 	            (0, _jsFileDownload2.default)(data, fileName);
-	        }).catch(catchErrorAndDispatchMsg.bind(dispatch));
+	        }).catch(function (error) {
+	            catchErrorAndDispatchMsg(dispatch, error);
+	        });
 	    };
 	};
 	
