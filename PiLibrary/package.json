@@ -26,7 +26,9 @@
     "redux-logger": "^2.6.1",
     "redux-promise": "latest",
     "redux-thunk": "^2.1.0",
-    "react-redux": "^4.4.5"
+    "react-redux": "^4.4.5",
+    "react-modal": "latest",
+    "react-popup": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

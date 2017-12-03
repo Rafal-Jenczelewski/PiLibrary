@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getAllFiles} from '../actions/index'
+import {withRouter} from "react-router-dom";
 
 class SearchBox extends React.Component {
     constructor(props) {
@@ -22,15 +23,17 @@ class SearchBox extends React.Component {
 
         this.setState({
             searchString: e.target.value,
-            requestTimeout: setTimeout(this.dispatchRequest, 2000)
+            requestTimeout: setTimeout(this.dispatchRequest, 500)
         })
     }
 
     dispatchRequest() {
-        if (this.state.searchString)
+        if (this.state.searchString) {
+            this.props.history.push("/");
             this.props.search(this.state.searchString);
+        }
         else
-            this.props.onEmptySearch();
+            this.props.getAllFiles();
     }
 
     render() {
@@ -53,4 +56,4 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SearchBox);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SearchBox));

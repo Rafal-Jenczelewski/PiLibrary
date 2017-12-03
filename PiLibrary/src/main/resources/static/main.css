@@ -53,7 +53,6 @@ html {
     left: 0;
     background: rgba(0, 0, 0, 0.8);
     z-index: 99999;
-    opacity: 0;
     -webkit-transition: opacity 400ms ease-in;
     -moz-transition: opacity 400ms ease-in;
     transition: opacity 400ms ease-in;
@@ -63,6 +62,10 @@ html {
 .modalDialog:target {
     opacity: 1;
     pointer-events: auto;
+}
+
+.modalDialogButton {
+    display: inline-block;
 }
 
 .modalDialog > div {

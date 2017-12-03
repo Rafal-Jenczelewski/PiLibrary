@@ -1,28 +1,27 @@
-package com.library.PiLibrary;
+package com.library.PiLibrary.Security;
 
 import com.library.PiLibrary.Storage.Users.SpringDataJpaUserDetailsService;
-import com.library.PiLibrary.Storage.Users.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.Http401AuthenticationEntryPoint;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.filter.HttpPutFormContentFilter;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 {
     @Autowired
     private SpringDataJpaUserDetailsService userDetailsService;
 
     @Autowired
-    private MySavedRequestAwareAuthenticationSuccessHandler successHandler;
+    private MyBasicEntryPoint entryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
@@ -35,17 +34,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     protected void configure(HttpSecurity http) throws Exception
     {
         http.authorizeRequests().antMatchers("/built/**", "*.css", "*login").permitAll()
-                //.antMatchers(HttpMethod.POST).authenticated()
+                .antMatchers(HttpMethod.POST).authenticated()
                 .antMatchers(HttpMethod.DELETE).authenticated()
+                .antMatchers(HttpMethod.PUT).authenticated()
                 .anyRequest().permitAll()
                 .and()
-                .formLogin().successHandler(successHandler).failureHandler(new SimpleUrlAuthenticationFailureHandler())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .httpBasic()
+                .httpBasic().authenticationEntryPoint(entryPoint)
                 .and()
-                .csrf().disable()
-                .logout();
+                .csrf().disable();
 
-        http.exceptionHandling().authenticationEntryPoint(new Http401AuthenticationEntryPoint("You don't have rights to access this part of system."));
+        http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
+        http.addFilterAfter(new HttpPutFormContentFilter(), CustomFilter.class);
     }
 }

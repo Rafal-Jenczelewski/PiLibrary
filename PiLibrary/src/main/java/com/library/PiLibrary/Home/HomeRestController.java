@@ -1,20 +1,20 @@
 package com.library.PiLibrary.Home;
 
-import com.library.PiLibrary.Storage.Files.FileRepository;
-import com.library.PiLibrary.Storage.StorageException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 
 
-@CrossOrigin( origins = "http://localhost:3000" )
-@RestController
+@Controller
 public class HomeRestController
 {
     @Autowired
-    FileRepository fileRepository;
-
+    HomeService service;
 
     @RequestMapping( value = "api/uploadedFiles/delete/{name}.{extension}",
                     method = RequestMethod.DELETE )
@@ -26,15 +26,12 @@ public class HomeRestController
     {
         String fullName = name + "." + extension;
 
-        try
-        {
-            fileRepository.deleteFile( fullName );
-            return "OK";
-        }
-        catch( StorageException e )
-        {
-            response.setStatus( 415 );
-            return e.getMessage();
-        }
+        return service.delete(fullName, response);
+    }
+
+    @RequestMapping( "/" )
+    public String index()
+    {
+        return "index";
     }
 }

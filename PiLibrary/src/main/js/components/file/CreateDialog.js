@@ -2,6 +2,7 @@ import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {uploadFile} from '../../actions/index'
+import Modal from 'react-modal'
 
 class CreateDialog extends React.Component {
 
@@ -13,7 +14,8 @@ class CreateDialog extends React.Component {
             notes: "",
             tags: "",
             file: undefined,
-            isNameValid: false
+            isNameValid: false,
+            openModal: false
         };
 
         this.onNameChangeHandler = this.onNameChangeHandler.bind(this);
@@ -21,6 +23,7 @@ class CreateDialog extends React.Component {
         this.onTagsChangeHandler = this.onTagsChangeHandler.bind(this);
         this.onFileClickHandler = this.onFileClickHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.clearStateAndClose = this.clearStateAndClose.bind(this);
     }
 
     onNameChangeHandler(e) {
@@ -65,46 +68,52 @@ class CreateDialog extends React.Component {
 
         this.props.uploadFile(formData);
 
+        this.clearStateAndClose();
+    }
+
+    clearStateAndClose() {
         this.setState({
             name: "",
             notes: "",
             tags: "",
             files: undefined,
-            isNameValid: false
+            isNameValid: false,
+            openModal: false
         });
-        window.location = "#";
+
     }
 
     render() {
         return (
             <div>
-                <a href="#createFile">
-                    <button className="btn">Create</button>
-                </a>
+                <button onClick={() => this.setState({openModal: true})} className="btn">Create</button>
 
-                <div id="createFile" className="modalDialog">
-                    <div>
-                        <a href="#" title="Close" className="close">X</a>
+                <Modal isOpen={this.state.openModal}>
+                    <div id="createFile">
+                        <div>
 
-                        <h2>Upload new file</h2>
+                            <h2>Upload new file</h2>
 
-                        <form>
-                            <input type="text" placeholder="Name" className="text-input"
-                                   onChange={this.onNameChangeHandler}/>
-                            <textarea placeholder="Description" className="notes-input"
-                                      onChange={this.onNotesChangeHandler}/>
-                            <input type="text" placeholder="Tags" className="text-input"
-                                   onChange={this.onTagsChangeHandler}/>
-                            <input className="text-input" type="file"
-                                   onChange={this.onFileClickHandler}
-                                   onClick={(event) => event.target.value = null}/>
-                            <button
-                                disabled={this.state.file === undefined || !this.state.isNameValid}
-                                onClick={this.handleSubmit}>Create
-                            </button>
-                        </form>
+                            <form>
+                                <input type="text" placeholder="Name" className="text-input" value={this.state.name}
+                                       onChange={this.onNameChangeHandler}/>
+                                <textarea placeholder="Description" className="notes-input" value={this.state.notes}
+                                          onChange={this.onNotesChangeHandler}/>
+                                <input type="text" placeholder="Tags" className="text-input" value={this.state.tags}
+                                       onChange={this.onTagsChangeHandler}/>
+                                <input className="text-input" type="file"
+                                       onChange={this.onFileClickHandler}
+                                       onClick={(event) => event.target.value = null}/>
+                                <button className="btn"
+                                    disabled={this.state.file === undefined || !this.state.isNameValid}
+                                    onClick={this.handleSubmit}>Create
+                                </button>
+                                <button onClick={this.clearStateAndClose}>Cancel</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                </Modal>
+
             </div>
         )
     }

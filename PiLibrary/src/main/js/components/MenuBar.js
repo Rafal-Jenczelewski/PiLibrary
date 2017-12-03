@@ -1,15 +1,32 @@
 import React from 'react'
 import CreateDialog from './file/CreateDialog'
 import SearchBox from './SearchBox'
-import LoginDialog from './LoginDialog'
+import {withRouter} from "react-router-dom";
+import {bindActionCreators} from "redux";
+import {connect} from "react-redux";
+import {getAllFiles} from '../actions/index'
 
-export default class MenuBar extends React.Component {
+class MenuBar extends React.Component {
     render() {
         return (<div className={"menu-bar"}>
+            <div className="menu-element">
+                <button onClick={() => {
+                    this.props.history.push("/");
+                    this.props.getAllFiles()
+                }}>Home
+                </button>
+            </div>
             <div className="menu-element"><CreateDialog/></div>
-            <div className="menu-element"><LoginDialog/></div>
             <div className="menu-element"><SearchBox search={this.props.search}/>
             </div>
         </div>)
     }
 }
+
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({
+        getAllFiles: getAllFiles,
+    }, dispatch);
+}
+
+export default withRouter(connect(null, mapDispatchToProps)(MenuBar));

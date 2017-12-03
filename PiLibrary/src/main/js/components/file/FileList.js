@@ -3,26 +3,23 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {getAllFiles} from '../../actions/index'
 import FilePage from './FilePage'
+import FileEntry from './FileEntry'
 
 class FileList extends React.Component {
 
     constructor(props) {
         super(props);
 
-        this.onDelete = this.onDelete.bind(this);
-    }
-
-    onDelete(name) {
-        fetch("api/uploadedFiles/delete/" + name, {
-            method: "delete",
-            mode: "cors",
-        }).then(() => this.props.getAllFiles())
     }
 
     render() {
-        let files = this.props.files.map(file =>
-            <FilePage key={file.name} file={file} onDelete={this.onDelete}/>
-        );
+        let files = "Looks like results are empty";
+
+        if (this.props.files.length !== 0) {
+            files = this.props.files.map(file =>
+                <FileEntry key={file.name} file={file}/>
+            );
+        }
 
         return (
             <div>

@@ -1,72 +1,54 @@
 package com.library.PiLibrary.Search;
 
-import com.library.PiLibrary.Storage.Files.FileRepository;
 import com.library.PiLibrary.Storage.Files.UploadedFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.RepositorySearchesResource;
 import org.springframework.hateoas.*;
-import org.springframework.hateoas.mvc.BasicLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Set;
 
 
 @RestController
 public class SearchRestController
-                implements ResourceProcessor<RepositorySearchesResource>,
-                ResourceAssembler<UploadedFile, Resource<UploadedFile>>
+                implements ResourceProcessor<RepositorySearchesResource>
+
 {
-    @Autowired
-    FileRepository fileRepository;
+
     @Autowired
     private EntityLinks entityLinks;
-
+    @Autowired
+    private SearchService service;
 
     @Override
     public RepositorySearchesResource process( RepositorySearchesResource repositorySearchesResource )
     {
         LinkBuilder lb = entityLinks.linkFor( UploadedFile.class, "uploadedFiles" );
-        repositorySearchesResource.add( new Link( lb + "/search/findWithTags/{searchString}",
-                        "findWithTags" ) );
+        repositorySearchesResource.add( new Link( lb + "/search/findContaining/{searchString}",
+                        "findContaining" ) );
+        repositorySearchesResource.add(new Link(lb + "search/findByTags/{tags}", "findByTags"));
         return repositorySearchesResource;
     }
 
-
-    @Override
-    public Resource<UploadedFile> toResource( UploadedFile uploadedFile )
-    {
-        BasicLinkBuilder builder = BasicLinkBuilder.linkToCurrentMapping().slash( "uploadedFiles" )
-                        .slash( uploadedFile.getId() );
-        return new Resource<>(
-                        uploadedFile, builder.withSelfRel(), builder.withRel( "uploadedFiles" ) );
-    }
-
-
     @ResponseBody
-    @RequestMapping( value = "api/uploadedFiles/search/findWithTags/{searchString}",
+    @RequestMapping( value = "api/uploadedFiles/search/findContaining/{searchString}",
                     produces = "application/hal+json" )
     public ResponseEntity<Set<Resource<UploadedFile>>> search( @PathVariable( "searchString" ) String searchString )
     {
-        Set<Resource<UploadedFile>> entities = new HashSet<>();
-        String[] tokens = searchString.split( " " );
+        return new ResponseEntity<>( service.searchContaining(searchString), HttpStatus.OK );
+    }
 
-        for( String token : tokens )
-        {
-            List<UploadedFile> filesWithName = fileRepository.findByNameContaining( token.trim() );
-            for( UploadedFile file : filesWithName )
-            {
-                entities.add( toResource( file ) );
-            }
-            List<UploadedFile> filesWithTag = fileRepository.findByTagsContaining( token.trim() );
-            for( UploadedFile file : filesWithTag )
-            {
-                entities.add( toResource( file ) );
-            }
-        }
+    @ResponseBody
+    @RequestMapping( value = "api/uploadedFiles/search/findByTags/{tags}",
+            produces = "application/hal+json" )
+    public ResponseEntity<Set<Resource<UploadedFile>>> searchByTags( @PathVariable( "tags" ) String tags )
+    {
 
-        return new ResponseEntity<>( entities, HttpStatus.OK );
+        return new ResponseEntity<>( service.searchByTags(tags), HttpStatus.OK );
     }
 }

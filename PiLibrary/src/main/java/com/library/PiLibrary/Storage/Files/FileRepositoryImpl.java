@@ -18,7 +18,7 @@ public class FileRepositoryImpl
     @Autowired
     FileRepository fileRepository;
 
-    static String resourcePath = "/home/pi/Documents/PiLibrary/files/";
+    static String resourcePath = "G:/PiLibrary/files/";
 
 
     @Override
@@ -64,11 +64,11 @@ public class FileRepositoryImpl
             throw new StorageException( "No such file in database" );
         }
 
-        fileRepository.delete( foundFiles.get( 0 ) );
         if( !file.delete() )
         {
             throw new StorageException( "File could not be deleted" );
         }
+        fileRepository.delete( foundFiles.get( 0 ) );
     }
 
 

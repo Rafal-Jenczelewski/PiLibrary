@@ -16,26 +16,6 @@ export const linksReducer = (state = [], action) => {
     return state;
 };
 
-export const pageSizeReducer = (state = 10, action) => {
-    switch(action.type) {
-        case "SET_PAGE_SIZE":
-            return action.payload;
-    }
-
-    return state;
-};
-
-export const authReducer = (state = {}, action) => {
-    switch(action.type) {
-        case "LOGIN":
-            return new Headers({"Authorization": "Basic " + action.user + ":" + action.password});
-        case "LOGOUT":
-            return {};
-    }
-
-    return state;
-}
-
 export const messageReducer = (state = {error: false, msg: ""}, action) => {
     switch (action.type) {
         case "SET_MSG":
@@ -43,4 +23,13 @@ export const messageReducer = (state = {error: false, msg: ""}, action) => {
     }
 
     return state;
-}
+};
+
+export const searchReducer = (state = "", action) => {
+    switch (action.type) {
+        case "SET_SEARCH":
+            return action.payload;
+    }
+
+    return state;
+};

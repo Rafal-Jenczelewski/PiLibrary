@@ -41,7 +41,10 @@ class Comment extends React.Component {
                 <div><textarea className="comment-view view" defaultValue={this.props.comment.content}/></div>
                 <div className="comment-footer"><CommentDialog
                     onComment={this.loadCommentFromServer}
-                    target={"com" + this.props.comment.id}/></div>
+                    target={"com" + this.props.comment.id}
+                    onClose={this.loadCommentFromServer}
+                />
+                </div>
             </div>
             <div>{comments}</div>
         </div>)

@@ -1,21 +1,48 @@
 import React, {Component} from 'react';
-import {connect, Provider} from 'react-redux';
-import FileList from './file/FileList'
-import PaginationBar from "./PaginationBar";
+import {connect} from 'react-redux';
 import Banner from './Banner';
 import MenuBar from "./MenuBar";
+import Content from './Content'
 import {bindActionCreators} from 'redux';
 import {getAllFiles, searchByString} from '../actions/index'
+import {Route, Switch, withRouter} from "react-router";
+import FilePage from './file/FilePage'
+import Modal from 'react-modal'
+import MessageBox from './MessageBox'
 
 class App extends Component {
     constructor(props) {
         super(props);
 
+        Modal.defaultStyles = {
+            content: {
+                WebkitOverflowScrolling: "touch",
+                background: "#fff",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                outline: "none",
+                overflow: "auto",
+                padding: "20px",
+                width: "300px",
+                height: "400px",
+                display: "inline-block",
+            },
+            overlay: {
+                textAlign: "center",
+                backgroundColor: "rgba(255, 255, 255, 0.75)",
+                bottom: 0,
+                left: 0,
+                position: "fixed",
+                right: 0,
+                top: 0
+            }
+        };
+        console.log(Modal.defaultStyles);
+
         this.state = {
             fromSearch: false,
             searchTerm: ""
         };
-
         this.searchByString = this.searchByString.bind(this);
     }
 
@@ -29,36 +56,20 @@ class App extends Component {
         });
     }
 
-    componentDidMount() {
-        this.props.getAllFiles();
-    }
-
     render() {
-        let msgBox = null;
-        if (this.props.message.msg)
-            msgBox = <span className={this.props.message.error ? "error-box box" : "msg-box box"}>{this.props.message.msg}</span>;
-
-        const fileList = <FileList/>;
-
-        let content = null;
-        if (!this.state.fromSearch)
-            content = <div className="app-content">
-                {msgBox}
-                {fileList}
-                <PaginationBar/>
-            </div>;
-        else
-            content = <div className="app-content">
-                {msgBox}
-                <span style={{float: "left"}}>Results for {this.state.searchTerm}:</span>
-                {fileList}
-            </div>;
-
-
         return (<div className={"App"}>
             <Banner/>
             <MenuBar onUpload={this.props.getAllFiles} search={this.searchByString}/>
-            {content}
+            <MessageBox/>
+            <Switch>
+                <Route path="/file/" render={() => {
+                    return <div className="app-content"><FilePage/></div>
+                }}/>
+                <Route exact path="/" render={() => {
+                    return <Content searchByString={this.searchByString} fromSearch={this.state.fromSearch}
+                                    searchTerm={this.state.searchTerm}/>
+                }}/>
+            </Switch>
         </div>)
     }
 }
@@ -78,6 +89,6 @@ function mapDispatchToProps(dispatch) {
     }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 
 

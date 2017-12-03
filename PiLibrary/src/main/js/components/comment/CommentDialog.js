@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {uploadComment} from '../../actions/index'
+import Modal from 'react-modal'
 
 class CommentDialog extends React.Component {
 
@@ -9,8 +10,8 @@ class CommentDialog extends React.Component {
         super(props);
 
         this.state = {
-            target: this.props.target,
-            content: ""
+            content: "",
+            openModal: false
         };
 
         this.onContentChangeHandler = this.onContentChangeHandler.bind(this);
@@ -24,45 +25,46 @@ class CommentDialog extends React.Component {
         });
     }
 
+
     handleSubmit(e) {
         e.preventDefault();
 
         let formData = new FormData();
 
-        formData.append("target", this.state.target);
+        formData.append("target", this.props.target);
         formData.append("content", this.state.content);
 
-        this.props.uploadComment(formData);
+        let p = Promise.resolve(this.props.uploadComment(formData));
+        p.then(this.props.onComment);
 
         this.setState({
-            content: ""
+            content: "",
+            openModal: false
         });
-        window.location = "#";
     }
 
     render() {
         return (
-            <div>
-                <a href={"#createComment" + this.state.target}>
-                    <button className="btn">Comment</button>
-                </a>
+            <div className="modalDialogButton">
+                <button onClick={() => this.setState({openModal: true})} className="btn">Comment</button>
 
-                <div id={"createComment" + this.state.target} className="modalDialog">
-                    <div>
-                        <a href="#" title="Close" className="close">X</a>
+                <Modal isOpen={this.state.openModal}>
+                    <div id={"createComment" + this.state.target}>
+                        <div>
+                            <h2>Upload Comment</h2>
 
-                        <h2>Upload Comment</h2>
-
-                        <form>
+                            <form>
                             <textarea placeholder="Description" className="comment-input"
                                       value={this.state.content}
                                       onChange={this.onContentChangeHandler}/>
-                            <button disabled={!this.state.content}
-                                    onClick={this.handleSubmit}>Comment
-                            </button>
-                        </form>
+                                <button className={"btn"} disabled={!this.state.content}
+                                        onClick={this.handleSubmit}>Comment
+                                </button>
+                                <button className={"btn"} onClick={() => this.setState({content: "", openModal: false})}>Cancel</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
+                </Modal>
             </div>
         )
     }
