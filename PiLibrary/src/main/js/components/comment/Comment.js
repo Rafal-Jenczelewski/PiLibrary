@@ -37,8 +37,8 @@ class Comment extends React.Component {
 
         return (<div>
             <div style={{marginLeft: this.props.margin + "px"}}
-                 className="comment-page">
-                <div><textarea className="comment-view view" defaultValue={this.props.comment.content}/></div>
+                 className="comment-page page">
+                <textarea className="comment-view view" defaultValue={this.props.comment.content}/>
                 <div className="comment-footer"><CommentDialog
                     onComment={this.loadCommentFromServer}
                     target={"com" + this.props.comment.id}

@@ -71,11 +71,11 @@ class FilePage extends React.Component {
     render() {
         let comments = [];
         for (let comment of this.state.comments)
-            comments.push(<Comment margin={5} key={comment.id} comment={comment}
+            comments.push(<Comment margin={0} key={comment.id} comment={comment}
             />)
 
         return (<div>
-            <div className="file-page">
+            <div className="file-page page">
                 <div className="name-view"><span>{this.state.file.name}</span></div>
                 <textarea className="notes-view view" readOnly={true} value={this.state.file.notes}/>
                 <Tags tags={this.state.file.tags}/>

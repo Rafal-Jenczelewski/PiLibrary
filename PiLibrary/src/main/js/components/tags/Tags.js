@@ -16,7 +16,7 @@ class Tags extends Component {
             }
         }
 
-        return <div style={{display: "inline-block", width: "100%", textAlign: "left"}}>{tags}</div>
+        return <div className="tags-view">{tags}</div>
     }
 }
 

@@ -25,8 +25,8 @@ class FileEntry extends React.Component {
         }
 
         return (<div className="file-entry">
-            <div style={{display: "inline-block", width: "100%"}}><Link to={{pathname: "/file/" + this.props.file.id}}
-                       style={{float: "left"}}>{this.props.file.name}</Link>
+            <div style={{display: "inline-block", width: "100%"}}><Link className={"name-link"}
+                                                                        to={{pathname: "/file/" + this.props.file.id}}>{this.props.file.name}</Link>
                 <button onClick={this.onDownloadClickHandler} style={{float: "right"}}>Download</button>
             </div>
             <Tags tags={this.props.file.tags}/>

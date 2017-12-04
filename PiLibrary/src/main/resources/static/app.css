@@ -27,10 +27,11 @@
 .menu-bar {
     width: 100%;
     height: 50px;
-    background-color: #f1f1f1;
+    background-color: #ffddcc;
     position: absolute;
     left: 0;
     top: 150px;
+    box-shadow: inset 0 0 8px 0 #6d2b06;
 }
 
 .menu-element {
@@ -46,20 +47,27 @@
 }
 
 .file-page {
-    background-color: #f1f1f1;
-    box-shadow: inset 0 2px 5px 0 lightblue;
+
+}
+
+.page {
+    background-color: #ffddcc;
+    box-shadow: inset 0 0 8px 0 #6d2b06;
+    border-radius: 4px;
 }
 
 .name-view {
     display: flex;
     margin: 10px;
+    color: blue;
+    padding-top: 10px;
 }
 
 .view {
     width: 80%;
     margin: 10px;
     box-shadow: inset 0 2px 5px 0 lightblue;
-    background-color: #f9f9f9;
+    background-color: white;
     display: block;
     border-style: none;
     overflow-y: auto;
@@ -68,7 +76,7 @@
 
 .comment-view {
     height: 100px;
-    margin-top: 5px;
+    display: inline-block;
 }
 
 .notes-view {
@@ -76,20 +84,22 @@
 }
 
 .tags-view {
-    height: 20px;
+    display: inline-block;
+    width: 100%;
+    text-align: left;
+    padding: 5px
 }
 
 .comment-page {
     margin-top: 10px;
     text-align: left !important;
     width: 60%;
-    box-shadow: inset 0 2px 5px 0 lightblue;
 }
 
 .comment-footer {
     font-size: xx-small;
     text-align: right;
-    background-color: lightgray;
+    background-color: #c24e0a;
 }
 
 .comment-input {
@@ -106,21 +116,14 @@
     width: 100%;
 }
 
-.error-box {
-    background-color: red;
-}
-
-.msg-box {
-    background-color: green;
-}
-
 .file-entry {
     display: flow-root;
     text-align: center;
     padding: 10px;
-    box-shadow: inset 0 2px 5px 0 lightblue;
-    background-color: #f9f9f9;
+    box-shadow: inset 0 0 8px 0 #6d2b06;
+    background-color: #ffddcc;
     margin: 5px;
+    border-radius: 4px;
 }
 
 .btn {
@@ -128,8 +131,24 @@
 }
 
 .tag-view {
-    border-color: #00d9ff;
-    background-color: blue;
     margin: 5px;
+    cursor: pointer;
+    color: blue;
+    float: left;
+}
 
+.name-link {
+    float: left;
+    color: blue;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.search-result {
+    padding: 20px;
+    padding: 20px;
+}
+
+.search-term {
+    font-weight: 700;
 }

@@ -33317,10 +33317,14 @@
 	            var searchResult = null;
 	            if (this.props.search) searchResult = _react2.default.createElement(
 	                'span',
-	                null,
-	                'Results for ',
-	                this.props.search,
-	                ':'
+	                { className: 'search-result' },
+	                'Results for \'',
+	                _react2.default.createElement(
+	                    'span',
+	                    { className: 'search-term' },
+	                    this.props.search
+	                ),
+	                '\':'
 	            );
 	
 	            return _react2.default.createElement(
@@ -33575,7 +33579,7 @@
 	                for (var _iterator = this.state.comments[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                    var comment = _step.value;
 	
-	                    comments.push(_react2.default.createElement(_Comment2.default, { margin: 5, key: comment.id, comment: comment
+	                    comments.push(_react2.default.createElement(_Comment2.default, { margin: 0, key: comment.id, comment: comment
 	                    }));
 	                }
 	            } catch (err) {
@@ -33598,7 +33602,7 @@
 	                null,
 	                _react2.default.createElement(
 	                    'div',
-	                    { className: 'file-page' },
+	                    { className: 'file-page page' },
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'name-view' },
@@ -33750,12 +33754,8 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    { style: { marginLeft: this.props.margin + "px" },
-	                        className: 'comment-page' },
-	                    _react2.default.createElement(
-	                        'div',
-	                        null,
-	                        _react2.default.createElement('textarea', { className: 'comment-view view', defaultValue: this.props.comment.content })
-	                    ),
+	                        className: 'comment-page page' },
+	                    _react2.default.createElement('textarea', { className: 'comment-view view', defaultValue: this.props.comment.content }),
 	                    _react2.default.createElement(
 	                        'div',
 	                        { className: 'comment-footer' },
@@ -34232,7 +34232,7 @@
 	
 	            return _react2.default.createElement(
 	                'div',
-	                { style: { display: "inline-block", width: "100%", textAlign: "left" } },
+	                { className: 'tags-view' },
 	                tags
 	            );
 	        }
@@ -34413,8 +34413,8 @@
 	                    { style: { display: "inline-block", width: "100%" } },
 	                    _react2.default.createElement(
 	                        _reactRouterDom.Link,
-	                        { to: { pathname: "/file/" + this.props.file.id },
-	                            style: { float: "left" } },
+	                        { className: "name-link",
+	                            to: { pathname: "/file/" + this.props.file.id } },
 	                        this.props.file.name
 	                    ),
 	                    _react2.default.createElement(

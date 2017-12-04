@@ -14,7 +14,7 @@ class Content extends Component {
     render() {
         let searchResult = null;
         if (this.props.search)
-            searchResult = <span>Results for {this.props.search}:</span>;
+            searchResult = <span className="search-result">Results for '<span className="search-term">{this.props.search}</span>':</span>;
 
         return (<div>
             <div className="app-content">
