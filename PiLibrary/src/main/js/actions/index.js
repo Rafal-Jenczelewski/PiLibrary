@@ -6,14 +6,14 @@ import fileDownload from 'js-file-download'
 const root = "http://localhost:8080/api/";
 
 const checkResponseStatusAndDispatchMessage = (response) => {
-    if (response.status === 414 || response.status === 415)
+    if (response.status === 414 || response.status === 415 || response.status === 401)
         throw Promise.resolve(response.text());
     else if (response.status >= 400)
-        throw Promise.resolve("Something went wrong with your request, please contact me.")
+        throw Promise.resolve("Something went wrong with your request, please contact administrator.")
+
 };
 
 const catchErrorAndDispatchMsg = (dispatch, error) => {
-    console.log("catch!");
     error.then((err) => dispatch(setMsg(true, err)));
 };
 
@@ -68,6 +68,7 @@ const setMsg = (error, msg) => {
 
 export const searchByString = (searchString) => {
     return dispatch => {
+        dispatch(setSearch(searchString));
         return client({
             method: 'get',
             path: root + '/uploadedFiles/search/findContaining/' + searchString
@@ -76,7 +77,7 @@ export const searchByString = (searchString) => {
                 return item1.name.localeCompare(item2.name)
             })));
             dispatch(setLinks([]));
-            dispatch(setSearch(searchString));
+            // dispatch(setSearch(searchString));
         })
     }
 };

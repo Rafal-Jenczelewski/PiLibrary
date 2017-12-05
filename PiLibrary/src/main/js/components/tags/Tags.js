@@ -11,7 +11,6 @@ class Tags extends Component {
         let tags = [];
         if (this.props.tags) {
             for (let tag of this.props.tags.split(/(?=#)/g)) {
-                console.log(tag);
                 tags.push(<Tag key={tag} tag={tag}/>)
             }
         }

@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {getAllFiles} from '../actions/index'
+import {getAllFiles, searchByString} from '../actions/index'
 import {withRouter} from "react-router-dom";
 
 class SearchBox extends React.Component {
@@ -29,11 +29,18 @@ class SearchBox extends React.Component {
 
     dispatchRequest() {
         if (this.state.searchString) {
-            this.props.history.push("/");
+            //this.props.history.push("/");
             this.props.search(this.state.searchString);
         }
         else
             this.props.getAllFiles();
+    }
+
+    componentWillReceiveProps(nextProps){
+        console.log(nextProps);
+        this.setState({
+            searchString: nextProps.searchTerm
+        })
     }
 
     render() {
@@ -46,13 +53,14 @@ class SearchBox extends React.Component {
 
 function mapStateToProps(state) {
     return {
-        files: state.files,
+        searchTerm: state.search,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return bindActionCreators({
-        getAllFiles: getAllFiles
+        getAllFiles: getAllFiles,
+        search: searchByString
     }, dispatch);
 }
 

@@ -20,7 +20,6 @@ class FileEntry extends React.Component {
     render() {
         let tags = [];
         for (let tag of this.props.file.tags.split(/(?=#)/g)) {
-            console.log(tag);
             tags.push(<Tag key={tag} tag={tag}/>)
         }
 

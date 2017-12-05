@@ -4,12 +4,8 @@ import Popup from 'react-popup'
 
 class MessageBox extends Component {
   componentWillReceiveProps(nextProps) {
-        console.log("box will props");
-        console.log(nextProps);
         if (!nextProps.message.msg)
             return;
-
-        console.log("will create popup");
 
         Popup.create({
             title: nextProps.message.error ? "Error" : "Success",

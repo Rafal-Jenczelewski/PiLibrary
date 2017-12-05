@@ -37,37 +37,24 @@ class App extends Component {
                 top: 0
             }
         };
-        console.log(Modal.defaultStyles);
 
         this.state = {
             fromSearch: false,
             searchTerm: ""
         };
-        this.searchByString = this.searchByString.bind(this);
-    }
-
-    searchByString(searchString) {
-        let p = Promise.resolve(this.props.searchByString(searchString));
-        p.then(() => {
-            this.setState({
-                fromSearch: true,
-                searchTerm: searchString
-            })
-        });
     }
 
     render() {
         return (<div className={"App"}>
             <Banner/>
-            <MenuBar onUpload={this.props.getAllFiles} search={this.searchByString}/>
+            <MenuBar onUpload={this.props.getAllFiles}/>
             <MessageBox/>
             <Switch>
                 <Route path="/file/" render={() => {
                     return <div className="app-content"><FilePage/></div>
                 }}/>
                 <Route exact path="/" render={() => {
-                    return <Content searchByString={this.searchByString} fromSearch={this.state.fromSearch}
-                                    searchTerm={this.state.searchTerm}/>
+                    return <Content/>
                 }}/>
             </Switch>
         </div>)

@@ -30,7 +30,6 @@ class FilePage extends React.Component {
 
     fetchFileDetails() {
         let id = this.props.location.pathname.split("/").slice(-1)[0];
-        console.log("will ask for file " + id);
         let p = Promise.resolve(this.props.getFile(id));
         p.then(response => {
             this.setState({
@@ -38,8 +37,6 @@ class FilePage extends React.Component {
             });
             return response.json();
         }).then((file) => {
-            console.log("got response with file: ");
-            console.log(file);
             this.setState({
                 file: file
             }, this.loadCommentsFromServer)
@@ -62,8 +59,6 @@ class FilePage extends React.Component {
     onDeleteHandler() {
         let p = Promise.resolve(this.props.deleteFile(this.state.file.name));
         p.then(() => {
-            console.log("props?");
-            console.log(this.props)
             this.props.history.push("/");
         })
     }

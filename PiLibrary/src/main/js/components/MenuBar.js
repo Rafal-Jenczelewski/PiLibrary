@@ -17,7 +17,7 @@ class MenuBar extends React.Component {
                 </button>
             </div>
             <div className="menu-element"><CreateDialog/></div>
-            <div className="menu-element"><SearchBox search={this.props.search}/>
+            <div className="menu-element"><SearchBox/>
             </div>
         </div>)
     }

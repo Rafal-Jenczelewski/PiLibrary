@@ -27,7 +27,7 @@ public class MyBasicEntryPoint extends BasicAuthenticationEntryPoint
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        setRealmName("localhost:8080");
+        setRealmName("PiLibrary");
         super.afterPropertiesSet();
     }
 }

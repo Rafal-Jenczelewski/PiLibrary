@@ -1,6 +1,5 @@
 package com.library.PiLibrary.Security;
 
-import com.library.PiLibrary.Storage.Users.SpringDataJpaUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -14,19 +13,14 @@ import org.springframework.web.filter.HttpPutFormContentFilter;
 
 @Configuration
 @EnableWebSecurity
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter
 {
-    @Autowired
-    private SpringDataJpaUserDetailsService userDetailsService;
-
     @Autowired
     private MyBasicEntryPoint entryPoint;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception
     {
-        //auth.userDetailsService(this.userDetailsService).passwordEncoder(User.PASSWORD_ENCODER);
         auth.inMemoryAuthentication().withUser("user").password("pass").roles("USER");
     }
 

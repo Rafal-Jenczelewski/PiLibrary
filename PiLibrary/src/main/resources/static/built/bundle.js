@@ -18317,39 +18317,22 @@
 	                top: 0
 	            }
 	        };
-	        console.log(_reactModal2.default.defaultStyles);
 	
 	        _this.state = {
 	            fromSearch: false,
 	            searchTerm: ""
 	        };
-	        _this.searchByString = _this.searchByString.bind(_this);
 	        return _this;
 	    }
 	
 	    _createClass(App, [{
-	        key: 'searchByString',
-	        value: function searchByString(searchString) {
-	            var _this2 = this;
-	
-	            var p = Promise.resolve(this.props.searchByString(searchString));
-	            p.then(function () {
-	                _this2.setState({
-	                    fromSearch: true,
-	                    searchTerm: searchString
-	                });
-	            });
-	        }
-	    }, {
 	        key: 'render',
 	        value: function render() {
-	            var _this3 = this;
-	
 	            return _react2.default.createElement(
 	                'div',
 	                { className: "App" },
 	                _react2.default.createElement(_Banner2.default, null),
-	                _react2.default.createElement(_MenuBar2.default, { onUpload: this.props.getAllFiles, search: this.searchByString }),
+	                _react2.default.createElement(_MenuBar2.default, { onUpload: this.props.getAllFiles }),
 	                _react2.default.createElement(_MessageBox2.default, null),
 	                _react2.default.createElement(
 	                    _reactRouter.Switch,
@@ -18362,8 +18345,7 @@
 	                            );
 	                        } }),
 	                    _react2.default.createElement(_reactRouter.Route, { exact: true, path: '/', render: function render() {
-	                            return _react2.default.createElement(_Content2.default, { searchByString: _this3.searchByString, fromSearch: _this3.state.fromSearch,
-	                                searchTerm: _this3.state.searchTerm });
+	                            return _react2.default.createElement(_Content2.default, null);
 	                        } })
 	                )
 	            );
@@ -21210,7 +21192,7 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'menu-element' },
-	                    _react2.default.createElement(_SearchBox2.default, { search: this.props.search })
+	                    _react2.default.createElement(_SearchBox2.default, null)
 	                )
 	            );
 	        }
@@ -21456,11 +21438,10 @@
 	var root = "http://localhost:8080/api/";
 	
 	var checkResponseStatusAndDispatchMessage = function checkResponseStatusAndDispatchMessage(response) {
-	    if (response.status === 414 || response.status === 415) throw Promise.resolve(response.text());else if (response.status >= 400) throw Promise.resolve("Something went wrong with your request, please contact me.");
+	    if (response.status === 414 || response.status === 415 || response.status === 401) throw Promise.resolve(response.text());else if (response.status >= 400) throw Promise.resolve("Something went wrong with your request, please contact administrator.");
 	};
 	
 	var catchErrorAndDispatchMsg = function catchErrorAndDispatchMsg(dispatch, error) {
-	    console.log("catch!");
 	    error.then(function (err) {
 	        return dispatch(setMsg(true, err));
 	    });
@@ -21515,6 +21496,7 @@
 	
 	var searchByString = exports.searchByString = function searchByString(searchString) {
 	    return function (dispatch) {
+	        dispatch(setSearch(searchString));
 	        return (0, _client2.default)({
 	            method: 'get',
 	            path: root + '/uploadedFiles/search/findContaining/' + searchString
@@ -21523,7 +21505,7 @@
 	                return item1.name.localeCompare(item2.name);
 	            })));
 	            dispatch(setLinks([]));
-	            dispatch(setSearch(searchString));
+	            // dispatch(setSearch(searchString));
 	        });
 	    };
 	};
@@ -29853,9 +29835,17 @@
 	        key: 'dispatchRequest',
 	        value: function dispatchRequest() {
 	            if (this.state.searchString) {
-	                this.props.history.push("/");
+	                //this.props.history.push("/");
 	                this.props.search(this.state.searchString);
 	            } else this.props.getAllFiles();
+	        }
+	    }, {
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(nextProps) {
+	            console.log(nextProps);
+	            this.setState({
+	                searchString: nextProps.searchTerm
+	            });
 	        }
 	    }, {
 	        key: 'render',
@@ -29874,13 +29864,14 @@
 	
 	function mapStateToProps(state) {
 	    return {
-	        files: state.files
+	        searchTerm: state.search
 	    };
 	}
 	
 	function mapDispatchToProps(dispatch) {
 	    return (0, _redux.bindActionCreators)({
-	        getAllFiles: _index.getAllFiles
+	        getAllFiles: _index.getAllFiles,
+	        search: _index.searchByString
 	    }, dispatch);
 	}
 	
@@ -33523,7 +33514,6 @@
 	            var _this2 = this;
 	
 	            var id = this.props.location.pathname.split("/").slice(-1)[0];
-	            console.log("will ask for file " + id);
 	            var p = Promise.resolve(this.props.getFile(id));
 	            p.then(function (response) {
 	                _this2.setState({
@@ -33531,8 +33521,6 @@
 	                });
 	                return response.json();
 	            }).then(function (file) {
-	                console.log("got response with file: ");
-	                console.log(file);
 	                _this2.setState({
 	                    file: file
 	                }, _this2.loadCommentsFromServer);
@@ -33562,8 +33550,6 @@
 	
 	            var p = Promise.resolve(this.props.deleteFile(this.state.file.name));
 	            p.then(function () {
-	                console.log("props?");
-	                console.log(_this4.props);
 	                _this4.props.history.push("/");
 	            });
 	        }
@@ -34211,7 +34197,6 @@
 	                    for (var _iterator = this.props.tags.split(/(?=#)/g)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                        var tag = _step.value;
 	
-	                        console.log(tag);
 	                        tags.push(_react2.default.createElement(_Tag2.default, { key: tag, tag: tag }));
 	                    }
 	                } catch (err) {
@@ -34387,7 +34372,6 @@
 	                for (var _iterator = this.props.file.tags.split(/(?=#)/g)[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
 	                    var tag = _step.value;
 	
-	                    console.log(tag);
 	                    tags.push(_react2.default.createElement(_Tag2.default, { key: tag, tag: tag }));
 	                }
 	            } catch (err) {
@@ -34481,11 +34465,7 @@
 	    _createClass(MessageBox, [{
 	        key: 'componentWillReceiveProps',
 	        value: function componentWillReceiveProps(nextProps) {
-	            console.log("box will props");
-	            console.log(nextProps);
 	            if (!nextProps.message.msg) return;
-	
-	            console.log("will create popup");
 	
 	            _reactPopup2.default.create({
 	                title: nextProps.message.error ? "Error" : "Success",
