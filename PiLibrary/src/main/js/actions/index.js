@@ -23,7 +23,6 @@ export const getAllFiles = () => {
             {rel: 'uploadedFiles'}])
             .then(response => {
                 dispatch(setFiles(response.entity._embedded.uploadedFiles));
-                dispatch(setLinks(response.entity._links));
                 dispatch(setSearch(""))
             }).catch((error) => {
                 catchErrorAndDispatchMsg(dispatch, error)
@@ -102,14 +101,6 @@ const setFiles = (files) => {
     return {
         type: "SET_FILES",
         payload: files
-    }
-};
-
-
-const setLinks = (links) => {
-    return {
-        type: "SET_LINKS",
-        payload: links
     }
 };
 

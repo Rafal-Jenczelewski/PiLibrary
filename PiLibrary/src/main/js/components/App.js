@@ -64,7 +64,6 @@ class App extends Component {
 function mapStateToProps(state) {
     return {
         files: state.files,
-        links: state.links,
         message: state.message
     }
 }
