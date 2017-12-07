@@ -1,2 +1,2 @@
 # PiLibrary
-Projekt na kurs SSO
+Projekt na kurs ZSW
